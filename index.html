@@ -435,7 +435,7 @@ const TROW_DEFS = [
 let COLS        = [];
 let TROWS       = [];
 let CUSTOM_COLS = [];
-const LS        = 'abbrol_v5';
+const LS        = 'abbrol_v6';
 const LS_LOGO   = 'abbrol_logo';
 
 /* ══════════════════════════════════════
@@ -467,6 +467,8 @@ function loadState(){
       if(!s.cols||!Array.isArray(s.cols))     s.cols=JSON.parse(JSON.stringify(COL_DEFS));
       if(!s.trows||!Array.isArray(s.trows))   s.trows=JSON.parse(JSON.stringify(TROW_DEFS));
       if(!s.customCols)                        s.customCols=[];
+      // Always force fixed cols visible — never let saved state hide them
+      s.cols.forEach(c=>{ if(c.fixed) c.vis=true; });
       return s;
     }
   }catch(e){}
@@ -647,7 +649,11 @@ function buildColManager(){
   });
 }
 let _dragKey=null;
-function colVis(key,v){ const c=COLS.find(x=>x.key===key); if(c){c.vis=v;} renderHeaders(); refreshRows(); renderFootTotals(); save(); }
+function colVis(key,v){
+  const c=COLS.find(x=>x.key===key);
+  if(c && !c.fixed){ c.vis=v; }
+  renderHeaders(); refreshRows(); renderFootTotals(); save();
+}
 function colReorder(from,to){
   if(from===to) return;
   const fi=COLS.findIndex(c=>c.key===from), ti=COLS.findIndex(c=>c.key===to);
@@ -885,7 +891,9 @@ function renderRow(tr, n){
     }
 
     // Apply visibility and width, then append
-    td.style.display = col.vis ? '' : 'none';
+    // Fixed columns (like desc) are always shown
+    const isVisible = col.fixed ? true : col.vis;
+    td.style.display = isVisible ? '' : 'none';
     const ws = getWpx(col);
     if(ws) td.style.width = ws; else td.style.width = '';
     tr.appendChild(td);
