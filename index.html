@@ -42,6 +42,9 @@ body{font-family:'Barlow',sans-serif;background:#c8c4bc;color:var(--iron);min-he
 .btn-print{background:var(--steel);color:#fff;}.btn-print:hover{background:#2c3f50;}
 .btn-rf{background:#2a2a2a;color:#777;}.btn-rf:hover{background:#333;color:#aaa;}
 .btn-rs{background:#1a1a1a;color:#444;border:1px solid #333;}.btn-rs:hover{background:#222;color:#aaa;}
+.btn-share{background:#1e3a2a;color:#4caf50;border:1px solid #2a5c3a;}.btn-share:hover{background:#244d33;color:#6fcf7a;}
+.btn-link{background:#1a2a3a;color:#4a9fd4;border:1px solid #2a4a6a;}.btn-link:hover{background:#1e3348;color:#6ab8e8;}
+.btn-link.copied{background:#2a3a1a;color:#8bc34a;border-color:#4a6a2a;}
 
 /* toggle */
 .tsw{position:relative;width:32px;height:17px;flex-shrink:0;}
@@ -269,7 +272,14 @@ table.it td input[type="number"]{text-align:right;}
           <button class="btn btn-pdf" onclick="downloadPDF()">⬇ Download PDF</button>
           <button class="btn btn-print" onclick="window.print()">🖨 Print</button>
           <button class="btn btn-rf" onclick="resetForm()">↺ Reset Form</button>
-          <button class="btn btn-rs" onclick="resetAll()">⚠ Reset All Settings</button>
+          <button class="btn btn-rs" onclick="resetAll()">⚠ Reset All</button>
+        </div>
+        <div class="abar swide" style="border-top:1px solid #222;margin-top:8px;padding-top:12px;">
+          <span style="font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:#555;align-self:center;">📲 Sync to other devices:</span>
+          <button class="btn btn-share" onclick="exportSettings()">⬇ Export Settings</button>
+          <button class="btn btn-share" onclick="document.getElementById('import-file').click()">⬆ Import Settings</button>
+          <input type="file" id="import-file" accept=".json" style="display:none" onchange="importSettings(event)">
+          <button class="btn btn-link" id="share-btn" onclick="copyShareLink()">🔗 Copy Share Link</button>
         </div>
       </div>
     </div>
@@ -1071,7 +1081,88 @@ async function downloadPDF(){
   }
 }
 
+/* ══════════════════════════════════════
+   EXPORT / IMPORT / SHARE SETTINGS
+══════════════════════════════════════ */
+
+function getSettingsObj(){
+  return {
+    c:V('sc'), t:V('st'), a:V('sa'),
+    fn:V('sfn'), fc:V('sfc'),
+    cur:V('scur'), tax:V('stax'), disc:V('sdisc'),
+    s1:V('ss1'), s2:V('ss2'),
+    notes:V('sn'), terms:V('ste'),
+    cols: JSON.parse(JSON.stringify(COLS.filter(c=>!c.custom))),
+    customCols: JSON.parse(JSON.stringify(CUSTOM_COLS)),
+    trows: JSON.parse(JSON.stringify(TROWS)),
+    panelOpen: !document.getElementById('sbody').classList.contains('hide'),
+  };
+}
+
+function exportSettings(){
+  const s = getSettingsObj();
+  const blob = new Blob([JSON.stringify(s, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'abbrol-settings.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importSettings(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try{
+      const s = JSON.parse(ev.target.result);
+      localStorage.setItem(LS, JSON.stringify(s));
+      alert('Settings imported! Reloading…');
+      location.reload();
+    } catch(err){
+      alert('Invalid settings file. Please use a file exported from this app.');
+    }
+  };
+  reader.readAsText(file);
+  // reset file input so same file can be re-imported
+  e.target.value = '';
+}
+
+function copyShareLink(){
+  const s = getSettingsObj();
+  // Encode settings as base64 in URL hash
+  const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(s))));
+  const url = location.href.split('#')[0] + '#settings=' + encoded;
+  navigator.clipboard.writeText(url).then(()=>{
+    const btn = document.getElementById('share-btn');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Link Copied!';
+    btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent = orig; btn.classList.remove('copied'); }, 2500);
+  }).catch(()=>{
+    // Fallback for browsers that block clipboard
+    prompt('Copy this link and open it on your other device:', url);
+  });
+}
+
+function loadFromUrlHash(){
+  try{
+    const hash = location.hash;
+    if(hash.startsWith('#settings=')){
+      const encoded = hash.slice('#settings='.length);
+      const s = JSON.parse(decodeURIComponent(escape(atob(encoded))));
+      localStorage.setItem(LS, JSON.stringify(s));
+      // Clean the hash from URL without reload
+      history.replaceState(null, '', location.pathname + location.search);
+      return true; // signals that we loaded from URL
+    }
+  } catch(e){}
+  return false;
+}
+
 /* ── Start the app after all functions are defined ── */
+loadFromUrlHash(); // load URL-shared settings into localStorage first if present
 init();
 </script>
 </body>
