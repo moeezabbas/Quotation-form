@@ -435,6 +435,7 @@ const TROW_DEFS = [
 let COLS        = [];
 let TROWS       = [];
 let CUSTOM_COLS = [];
+let rc          = 0;
 const LS        = 'abbrol_v6';
 const LS_LOGO   = 'abbrol_logo';
 
@@ -795,7 +796,6 @@ function renderHeaders(){
 /* ══════════════════════════════════════
    ROWS
 ══════════════════════════════════════ */
-let rc=0;
 
 function makeSizeCell(){
   const w=document.createElement('div'); w.className='size-td';
