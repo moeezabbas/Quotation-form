@@ -503,9 +503,9 @@ function resetAll(){
 }
 
 /* ══════════════════════════════════════
-   INIT
+   INIT  — called at bottom of script
 ══════════════════════════════════════ */
-(function init(){
+function init(){
   const s=loadState();
   COLS        = mergeCustomCols(s.cols||JSON.parse(JSON.stringify(COL_DEFS)), s.customCols||[]);
   TROWS       = s.trows||JSON.parse(JSON.stringify(TROW_DEFS));
@@ -538,7 +538,7 @@ function resetAll(){
   renderHeaders();
   addRow(); addRow(); addRow();
   renderSumBox();
-})();
+}
 
 function mergeCustomCols(cols, customCols){
   const filtered=cols.filter(c=>!c.custom);
@@ -1070,6 +1070,9 @@ async function downloadPDF(){
     document.querySelectorAll('.srow.disabled').forEach(r=>r.style.display='');
   }
 }
+
+/* ── Start the app after all functions are defined ── */
+init();
 </script>
 </body>
 </html>
