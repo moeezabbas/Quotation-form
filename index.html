@@ -6,180 +6,127 @@
 <title>Quotation – Iron Casting & Manufacturing</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --iron:#1a1a1a; --rust:#b84a1e; --steel:#3d5a6e;
-  --silver:#c0c8d0; --warm:#f5f2ee; --amber:#d4802a; --lgray:#e8e4df;
+:root{
+  --iron:#1a1a1a;--rust:#b84a1e;--steel:#3d5a6e;
+  --silver:#c0c8d0;--warm:#f5f2ee;--amber:#d4802a;--lgray:#e8e4df;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Barlow',sans-serif;background:#ccc8c0;color:var(--iron);min-height:100vh;padding:16px;}
 
-/* ═══════════════════════════════
-   SETTINGS PANEL  (no-print)
-═══════════════════════════════ */
-#settings-panel{max-width:1020px;margin:0 auto 18px;border-radius:5px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.45);}
-
-.s-topbar{
-  background:#000;padding:12px 20px;display:flex;align-items:center;
-  justify-content:space-between;cursor:pointer;user-select:none;
-}
+/* ═══════════════════ SETTINGS PANEL ═══════════════════ */
+#settings-panel{max-width:1060px;margin:0 auto 18px;border-radius:5px;overflow:hidden;box-shadow:0 4px 22px rgba(0,0,0,.45);}
+.s-topbar{background:#000;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
 .s-topbar h2{font-family:'Bebas Neue',sans-serif;letter-spacing:4px;font-size:1rem;color:var(--amber);}
-.s-topbar .badge{
-  background:#222;border:1px solid #444;border-radius:3px;
-  padding:3px 10px;font-size:.65rem;letter-spacing:2px;color:#888;text-transform:uppercase;
-}
-.s-topbar .arr{color:var(--amber);font-size:.9rem;transition:transform .3s;}
-.s-topbar .arr.closed{transform:rotate(180deg);}
-
-.s-body{
-  background:#111;padding:20px 22px 24px;
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;
-}
+.s-badge{background:#1a1a1a;border:1px solid #3a3a3a;border-radius:3px;padding:3px 10px;font-size:.62rem;letter-spacing:2px;color:#666;text-transform:uppercase;}
+.s-arr{color:var(--amber);font-size:.9rem;transition:transform .3s;}
+.s-arr.closed{transform:rotate(180deg);}
+.s-body{background:#111;padding:20px 22px 24px;display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:14px;}
 .s-body.hide{display:none;}
-
 .sg{background:#1c1c1c;border:1px solid #2e2e2e;border-radius:3px;padding:13px;}
-.sg-title{
-  font-family:'Barlow Condensed',sans-serif;font-size:.65rem;letter-spacing:3px;
-  text-transform:uppercase;color:var(--amber);margin-bottom:10px;
-  border-bottom:1px solid #2e2e2e;padding-bottom:5px;
-}
+.sg-title{font-family:'Barlow Condensed',sans-serif;font-size:.63rem;letter-spacing:3px;text-transform:uppercase;color:var(--amber);margin-bottom:10px;border-bottom:1px solid #2e2e2e;padding-bottom:5px;}
 .sf{display:flex;flex-direction:column;gap:3px;margin-bottom:9px;}
 .sf:last-child{margin-bottom:0;}
 .sf label{font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--silver);}
-.sf input,.sf textarea,.sf select{
-  background:#242424;border:1px solid #383838;border-radius:2px;
-  color:#ddd;font-family:'Barlow',sans-serif;font-size:.82rem;
-  padding:6px 9px;outline:none;width:100%;
-}
+.sf input,.sf textarea,.sf select{background:#242424;border:1px solid #383838;border-radius:2px;color:#ddd;font-family:'Barlow',sans-serif;font-size:.82rem;padding:6px 9px;outline:none;width:100%;}
 .sf textarea{resize:vertical;min-height:68px;line-height:1.5;}
 .sf input:focus,.sf textarea:focus{border-color:var(--rust);}
-
-.logo-btn{
-  background:var(--rust);color:#fff;border:none;padding:7px 0;
-  font-family:'Barlow Condensed',sans-serif;font-size:.78rem;letter-spacing:2px;
-  text-transform:uppercase;cursor:pointer;border-radius:2px;width:100%;margin-top:5px;
-}
+.logo-btn{background:var(--rust);color:#fff;border:none;padding:7px 0;font-family:'Barlow Condensed',sans-serif;font-size:.78rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;width:100%;margin-top:4px;}
 .logo-btn:hover{background:#9e3614;}
-
+.logo-btn.remove{background:#2a2a2a;color:#888;}
+.logo-btn.remove:hover{background:#333;color:#bbb;}
 .s-wide{grid-column:1/-1;}
 .action-bar{grid-column:1/-1;display:flex;gap:10px;flex-wrap:wrap;padding-top:4px;}
-.btn{
-  padding:10px 22px;font-family:'Barlow Condensed',sans-serif;
-  font-size:.88rem;letter-spacing:2px;text-transform:uppercase;
-  border:none;cursor:pointer;border-radius:2px;font-weight:600;
-}
-.btn-pdf{background:var(--rust);color:#fff;}
-.btn-pdf:hover{background:#9e3614;}
-.btn-print{background:var(--steel);color:#fff;}
-.btn-print:hover{background:#2c3f50;}
-.btn-reset{background:#2a2a2a;color:#888;}
-.btn-reset:hover{background:#333;color:#aaa;}
+.btn{padding:10px 22px;font-family:'Barlow Condensed',sans-serif;font-size:.88rem;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;border-radius:2px;font-weight:600;}
+.btn-pdf{background:var(--rust);color:#fff;} .btn-pdf:hover{background:#9e3614;}
+.btn-print{background:var(--steel);color:#fff;} .btn-print:hover{background:#2c3f50;}
+.btn-reset{background:#2a2a2a;color:#888;} .btn-reset:hover{background:#333;color:#bbb;}
 
-/* ═══════════════════════════════
-   QUOTE DOCUMENT
-═══════════════════════════════ */
-#quote-doc{background:var(--warm);max-width:1020px;margin:0 auto;box-shadow:0 6px 36px rgba(0,0,0,.28);overflow:hidden;}
-
+/* ═══════════════════ DOCUMENT ═══════════════════ */
+#quote-doc{background:var(--warm);max-width:1060px;margin:0 auto;box-shadow:0 6px 36px rgba(0,0,0,.28);overflow:hidden;}
 .doc-topbar{background:var(--iron);height:7px;}
 
 /* header */
-.doc-header{
-  display:grid;grid-template-columns:auto 1fr auto;
-  align-items:center;gap:20px;padding:26px 34px 20px;
-  border-bottom:3px solid var(--rust);position:relative;
-}
+.doc-header{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px;padding:26px 34px 20px;border-bottom:3px solid var(--rust);position:relative;}
 .doc-header::after{content:'';position:absolute;bottom:-6px;left:0;right:0;height:1px;background:var(--amber);}
-
 #logo-display{width:82px;height:82px;object-fit:contain;display:none;}
 #logo-ph{width:82px;height:82px;background:var(--iron);display:flex;align-items:center;justify-content:center;}
 #logo-ph svg{opacity:.4;}
-
 #disp-company{font-family:'Bebas Neue',sans-serif;font-size:2.1rem;letter-spacing:4px;line-height:1;}
 #disp-tagline{font-family:'Barlow Condensed',sans-serif;font-size:.8rem;letter-spacing:3px;text-transform:uppercase;color:var(--rust);margin-top:3px;}
 #disp-addr{font-size:.74rem;color:#666;margin-top:7px;line-height:1.65;}
-
 .qtitle-block{text-align:right;}
 .qtitle-block h1{font-family:'Bebas Neue',sans-serif;font-size:2.7rem;letter-spacing:6px;color:var(--steel);line-height:1;}
 .qref-label{font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:#999;margin-top:5px;}
-.qref-input{
-  text-align:right;border:none;border-bottom:2px solid var(--rust);
-  font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;
-  color:var(--rust);outline:none;background:transparent;width:155px;
-}
+.qref-input{text-align:right;border:none;border-bottom:2px solid var(--rust);font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;color:var(--rust);outline:none;background:transparent;width:155px;}
 
 /* meta strip */
 .doc-meta{background:var(--steel);display:grid;grid-template-columns:repeat(4,1fr);}
 .mc{padding:10px 18px;border-right:1px solid rgba(255,255,255,.12);}
 .mc:last-child{border-right:none;}
 .mc label{display:block;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--silver);margin-bottom:3px;}
-.mc input{
-  background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,.25);
-  color:#fff;font-family:'Barlow',sans-serif;font-size:.86rem;width:100%;outline:none;padding:2px 0;
-}
+.mc input{background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,.25);color:#fff;font-family:'Barlow',sans-serif;font-size:.86rem;width:100%;outline:none;padding:2px 0;}
 .mc input::placeholder{color:rgba(255,255,255,.28);}
 
 /* body */
 .doc-body{padding:26px 34px;}
 
 /* customer row */
-.customer-row{
-  display:grid;grid-template-columns:1fr auto;align-items:end;gap:20px;
-  background:#ede9e3;border-left:4px solid var(--rust);padding:13px 16px;margin-bottom:22px;
-}
-.cr-left label,.cr-right label{
-  display:block;font-family:'Bebas Neue',sans-serif;font-size:.78rem;
-  letter-spacing:3px;color:var(--rust);margin-bottom:5px;
-}
+.customer-row{display:grid;grid-template-columns:1fr auto;align-items:end;gap:20px;background:#ede9e3;border-left:4px solid var(--rust);padding:13px 16px;margin-bottom:22px;}
+.cr-left label,.cr-right label{display:block;font-family:'Bebas Neue',sans-serif;font-size:.78rem;letter-spacing:3px;color:var(--rust);margin-bottom:5px;}
 .cr-right label{color:var(--steel);}
-.cr-left input,.cr-right input{
-  background:transparent;border:none;border-bottom:1px solid #bbb;
-  font-family:'Barlow',sans-serif;font-size:.95rem;color:var(--iron);
-  outline:none;padding:3px 0;
-}
-.cr-left input{width:100%;}
-.cr-right input{width:150px;text-align:right;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--rust);font-size:1.05rem;border-bottom-color:var(--rust);}
+.cr-left input{width:100%;background:transparent;border:none;border-bottom:1px solid #bbb;font-family:'Barlow',sans-serif;font-size:.95rem;color:var(--iron);outline:none;padding:3px 0;}
+.cr-left input::placeholder{color:#bbb;}
+.cr-right input{width:150px;background:transparent;border:none;border-bottom:2px solid var(--rust);font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--rust);font-size:1.05rem;outline:none;text-align:right;padding:3px 0;}
 
-/* section title */
-.stitle{
-  font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:4px;
-  color:var(--iron);border-bottom:2px solid var(--rust);
-  padding-bottom:5px;margin-bottom:12px;display:flex;align-items:center;gap:10px;
-}
+.stitle{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:4px;color:var(--iron);border-bottom:2px solid var(--rust);padding-bottom:5px;margin-bottom:12px;display:flex;align-items:center;gap:10px;}
 .stitle .line{flex:1;height:1px;background:var(--lgray);}
 
-/* ─── Items table ─── */
+/* ─── TABLE ─── */
 .tbl-wrap{overflow-x:auto;}
-table.itable{width:100%;border-collapse:collapse;font-size:.77rem;min-width:780px;}
+table.itable{width:100%;border-collapse:collapse;font-size:.77rem;min-width:860px;}
+
+/* main header row */
 table.itable thead tr.th-main{background:var(--iron);color:var(--warm);}
-table.itable thead tr.th-sub{background:#2d4555;color:var(--silver);}
-table.itable th{
-  padding:8px 7px;text-align:left;
-  font-family:'Barlow Condensed',sans-serif;font-size:.67rem;
-  letter-spacing:1.5px;text-transform:uppercase;font-weight:600;
-}
+/* sub-header row for size columns */
+table.itable thead tr.th-sub{background:#2a4255;}
+
+table.itable th{padding:8px 7px;text-align:left;font-family:'Barlow Condensed',sans-serif;font-size:.67rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;}
 table.itable th.ctr{text-align:center;}
 table.itable th.rgt{text-align:right;}
-table.itable .size-span{text-align:center;letter-spacing:2px;color:var(--silver);font-size:.65rem;}
+
+/* sub-header cells */
+.th-sub th{color:#9ab;font-size:.63rem;letter-spacing:1px;font-weight:400;padding:5px 7px;border-right:1px solid rgba(255,255,255,.08);}
+.th-sub th:last-child{border-right:none;}
 
 table.itable tbody tr{border-bottom:1px solid var(--lgray);}
 table.itable tbody tr:nth-child(even){background:rgba(0,0,0,.018);}
 table.itable tbody tr:hover{background:#ede9e3;}
-table.itable td{padding:5px 7px;vertical-align:middle;}
-table.itable td input,table.itable td select{
-  width:100%;border:none;background:transparent;
-  font-family:'Barlow',sans-serif;font-size:.77rem;color:var(--iron);
-  outline:none;padding:2px 0;
-}
+table.itable td{padding:5px 6px;vertical-align:middle;}
+table.itable td input,table.itable td select{border:none;background:transparent;font-family:'Barlow',sans-serif;font-size:.77rem;color:var(--iron);outline:none;padding:2px 0;}
 table.itable td input[type="number"]{text-align:right;}
-table.itable td input.ctr-inp{text-align:center;}
+
+/* size cells — value + unit toggle side by side */
+.size-td{display:flex;align-items:center;gap:3px;min-width:90px;}
+.size-td input{flex:1;min-width:0;text-align:right;font-size:.77rem;}
+.unit-toggle{
+  display:flex;border:1px solid #ccc;border-radius:3px;overflow:hidden;flex-shrink:0;
+}
+.unit-toggle button{
+  padding:2px 5px;border:none;background:#f0ece6;color:#888;
+  font-family:'Barlow Condensed',sans-serif;font-size:.58rem;letter-spacing:.5px;
+  cursor:pointer;line-height:1.2;transition:background .15s,color .15s;
+}
+.unit-toggle button.active{background:var(--steel);color:#fff;}
+.unit-toggle button:first-child{border-right:1px solid #ccc;}
+
+/* show unit label in PDF (hide toggle buttons, keep text) */
+.unit-label{font-size:.65rem;color:#999;font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px;flex-shrink:0;}
+
 table.itable .tc{text-align:right;font-weight:600;color:var(--rust);font-family:'Barlow Condensed',sans-serif;font-size:.86rem;}
 .del-btn{background:none;border:none;cursor:pointer;color:#ccc;font-size:.85rem;padding:0 2px;}
 .del-btn:hover{color:var(--rust);}
 
-.add-btn{
-  margin-top:9px;background:none;border:2px dashed var(--steel);color:var(--steel);
-  font-family:'Barlow Condensed',sans-serif;font-size:.75rem;letter-spacing:2px;
-  text-transform:uppercase;padding:7px 16px;cursor:pointer;border-radius:2px;transition:all .2s;
-}
+.add-btn{margin-top:9px;background:none;border:2px dashed var(--steel);color:var(--steel);font-family:'Barlow Condensed',sans-serif;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;padding:7px 16px;cursor:pointer;border-radius:2px;transition:all .2s;}
 .add-btn:hover{background:var(--steel);color:#fff;}
 
 /* totals */
@@ -188,10 +135,7 @@ table.itable .tc{text-align:right;font-weight:600;color:var(--rust);font-family:
 .trow{display:flex;justify-content:space-between;align-items:center;padding:8px 15px;border-bottom:1px solid var(--lgray);font-size:.82rem;}
 .trow label{color:#666;}
 .trow .v{font-weight:600;font-family:'Barlow Condensed',sans-serif;}
-.trow input[type="number"]{
-  border:none;background:transparent;font-family:'Barlow',sans-serif;
-  font-size:.82rem;font-weight:600;width:52px;text-align:right;outline:none;color:var(--iron);
-}
+.trow input[type="number"]{border:none;background:transparent;font-family:'Barlow',sans-serif;font-size:.82rem;font-weight:600;width:52px;text-align:right;outline:none;color:var(--iron);}
 .trow.grand{background:var(--iron);color:#fff;padding:11px 15px;}
 .trow.grand label{color:var(--silver);letter-spacing:2px;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;font-size:.68rem;}
 .trow.grand .v{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--amber);letter-spacing:2px;}
@@ -201,14 +145,9 @@ table.itable .tc{text-align:right;font-weight:600;color:var(--rust);font-family:
 /* notes & terms */
 .nt-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px;}
 .nb h4{font-family:'Bebas Neue',sans-serif;letter-spacing:3px;font-size:.8rem;color:var(--steel);margin-bottom:6px;}
-.nb textarea{
-  width:100%;background:#ede9e3;
-  border:1px solid var(--lgray);border-left:3px solid var(--steel);
-  font-family:'Barlow',sans-serif;font-size:.78rem;color:var(--iron);
-  padding:9px 11px;resize:vertical;outline:none;min-height:80px;line-height:1.6;
-}
+.nb textarea{width:100%;background:#ede9e3;border:1px solid var(--lgray);border-left:3px solid var(--steel);font-family:'Barlow',sans-serif;font-size:.78rem;color:var(--iron);padding:9px 11px;resize:vertical;outline:none;min-height:80px;line-height:1.6;}
 
-/* signature */
+/* signatures */
 .sig-row{display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-top:26px;padding-top:18px;border-top:1px solid var(--lgray);}
 .sb label{display:block;font-size:.62rem;letter-spacing:2px;text-transform:uppercase;color:#aaa;margin-bottom:7px;}
 .sl{border-bottom:1px solid var(--iron);height:36px;margin-bottom:4px;}
@@ -220,32 +159,34 @@ table.itable .tc{text-align:right;font-weight:600;color:var(--rust);font-family:
 #disp-foot-contact{font-size:.68rem;color:#666;text-align:right;}
 .doc-botbar{background:var(--rust);height:5px;}
 
-/* ═══════════════════════════════
-   PRINT
-═══════════════════════════════ */
+/* ═══════════════════ PRINT ═══════════════════ */
 @media print{
   body{background:#fff;padding:0;}
   #settings-panel{display:none!important;}
   #quote-doc{box-shadow:none;max-width:100%;}
   .add-btn,.del-btn{display:none!important;}
-  input,select,textarea{border-color:transparent!important;background:transparent!important;}
-  .mc input{border-bottom:1px solid rgba(255,255,255,.25)!important;}
-  .nb textarea{border:none!important;padding:0!important;}
+  /* hide toggle buttons, show unit label */
+  .unit-toggle{display:none!important;}
+  .unit-label{display:inline!important;}
+  input,select{border-color:transparent!important;background:transparent!important;}
+  .mc input{border-bottom-color:rgba(255,255,255,.25)!important;}
+  .nb textarea{border:none!important;padding:0!important;background:transparent!important;}
   @page{margin:0;size:A4;}
 }
+/* unit-label hidden on screen */
+.unit-label{display:none;}
 </style>
 </head>
 <body>
 
 <!-- ══════════════════════════════════════
-     ⚙  SETTINGS PANEL  — hidden in PDF
+     ⚙  SETTINGS PANEL  — hidden in PDF / Print
 ══════════════════════════════════════ -->
 <div id="settings-panel">
-
   <div class="s-topbar" onclick="toggleSettings()">
     <h2>⚙ Settings &amp; Customization</h2>
-    <span class="badge">🔒 Hidden in PDF / Print</span>
-    <span class="arr" id="sarr">▲</span>
+    <span class="s-badge">🔒 Hidden in PDF / Print</span>
+    <span class="s-arr" id="sarr">▲</span>
   </div>
 
   <div class="s-body" id="sbody">
@@ -254,17 +195,17 @@ table.itable .tc{text-align:right;font-weight:600;color:var(--rust);font-family:
     <div class="sg">
       <div class="sg-title">Company Logo</div>
       <div class="sf">
-        <label>Upload Logo Image</label>
+        <label>Upload Logo</label>
         <button class="logo-btn" onclick="document.getElementById('logo-input').click()">📎 Upload Logo</button>
         <input type="file" id="logo-input" accept="image/*" style="display:none" onchange="uploadLogo(event)">
       </div>
       <div class="sf">
-        <label>Remove Logo</label>
-        <button class="logo-btn" style="background:#333" onclick="removeLogo()">✕ Remove Logo</button>
+        <label>Remove</label>
+        <button class="logo-btn remove" onclick="removeLogo()">✕ Remove Logo</button>
       </div>
     </div>
 
-    <!-- Company Info -->
+    <!-- Company -->
     <div class="sg">
       <div class="sg-title">Company Info</div>
       <div class="sf"><label>Company Name</label><input id="s-company" value="FERRUM CAST INDUSTRIES" oninput="sync('company')"></div>
@@ -275,7 +216,7 @@ table.itable .tc{text-align:right;font-weight:600;color:var(--rust);font-family:
     <div class="sg">
       <div class="sg-title">Address &amp; Contact</div>
       <div class="sf">
-        <label>Address (Header)</label>
+        <label>Header Address</label>
         <textarea id="s-addr" oninput="sync('addr')">Plot 42, Industrial Area Phase II
 Lahore, Punjab 54000 · Pakistan
 Tel: +92 42 3456 7890
@@ -285,12 +226,12 @@ info@ferrumcast.com</textarea>
 
     <!-- Footer -->
     <div class="sg">
-      <div class="sg-title">Footer Line</div>
+      <div class="sg-title">Footer</div>
       <div class="sf"><label>Footer Company Name</label><input id="s-foot-name" value="FERRUM CAST INDUSTRIES" oninput="sync('foot-name')"></div>
-      <div class="sf"><label>Footer Contact</label><input id="s-foot-contact" value="ferrumcast.com · info@ferrumcast.com · +92-42-3456-7890" oninput="sync('foot-contact')"></div>
+      <div class="sf"><label>Footer Contact Line</label><input id="s-foot-contact" value="ferrumcast.com · info@ferrumcast.com · +92-42-3456-7890" oninput="sync('foot-contact')"></div>
     </div>
 
-    <!-- Currency & Tax defaults -->
+    <!-- Currency & Tax -->
     <div class="sg">
       <div class="sg-title">Currency &amp; Tax</div>
       <div class="sf"><label>Currency Symbol</label><input id="s-currency" value="PKR" oninput="updateCurrency()"></div>
@@ -300,17 +241,17 @@ info@ferrumcast.com</textarea>
 
     <!-- Notes & Terms -->
     <div class="sg s-wide">
-      <div class="sg-title">Default Notes &amp; Terms (editable in document too)</div>
+      <div class="sg-title">Default Notes &amp; Terms &nbsp;(also editable directly in the document)</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
         <div class="sf">
           <label>Notes</label>
-          <textarea id="s-notes" oninput="syncTextarea('notes')">Prices quoted are Ex-Works (EXW) our factory.
+          <textarea id="s-notes" oninput="syncTA('notes')">Prices quoted are Ex-Works (EXW) our factory.
 All castings subject to standard inspection per agreed drawing.
 Pattern / tooling cost billed separately if applicable.</textarea>
         </div>
         <div class="sf">
           <label>Terms &amp; Conditions</label>
-          <textarea id="s-terms" oninput="syncTextarea('terms')">Payment: 50% advance, 50% against delivery.
+          <textarea id="s-terms" oninput="syncTA('terms')">Payment: 50% advance, 50% against delivery.
 Validity: Prices valid for 30 days from issue date.
 Warranty: Defective castings replaced FOC within 30 days.
 Force majeure and raw material price escalation clauses apply.</textarea>
@@ -318,21 +259,21 @@ Force majeure and raw material price escalation clauses apply.</textarea>
       </div>
     </div>
 
-    <!-- Signature labels -->
+    <!-- Signature Labels -->
     <div class="sg">
       <div class="sg-title">Signature Labels</div>
-      <div class="sf"><label>Signatory 1 Label</label><input id="s-sig1" value="Authorized Signatory" oninput="document.getElementById('sig1-label').textContent=this.value"></div>
-      <div class="sf"><label>Signatory 2 Label</label><input id="s-sig2" value="Client Acceptance" oninput="document.getElementById('sig2-label').textContent=this.value"></div>
+      <div class="sf"><label>Signatory 1</label><input id="s-sig1" value="Authorized Signatory" oninput="document.getElementById('sig1-label').textContent=this.value"></div>
+      <div class="sf"><label>Signatory 2</label><input id="s-sig2" value="Client Acceptance" oninput="document.getElementById('sig2-label').textContent=this.value"></div>
     </div>
 
     <!-- Actions -->
     <div class="action-bar">
-      <button class="btn btn-pdf" onclick="downloadPDF()">⬇ Download PDF</button>
+      <button class="btn btn-pdf"   onclick="downloadPDF()">⬇ Download PDF</button>
       <button class="btn btn-print" onclick="window.print()">🖨 Print / Save as PDF</button>
       <button class="btn btn-reset" onclick="resetForm()">↺ Reset Form</button>
     </div>
 
-  </div><!-- /s-body -->
+  </div>
 </div><!-- /settings-panel -->
 
 
@@ -354,13 +295,11 @@ Force majeure and raw material price escalation clauses apply.</textarea>
         </svg>
       </div>
     </div>
-
     <div>
       <div id="disp-company">FERRUM CAST INDUSTRIES</div>
       <div id="disp-tagline">Iron Casting &amp; Precision Manufacturing</div>
       <div id="disp-addr">Plot 42, Industrial Area Phase II<br>Lahore, Punjab 54000 · Pakistan<br>Tel: +92 42 3456 7890 · info@ferrumcast.com</div>
     </div>
-
     <div class="qtitle-block">
       <h1>QUOTATION</h1>
       <div class="qref-label">Quote Reference</div>
@@ -368,7 +307,7 @@ Force majeure and raw material price escalation clauses apply.</textarea>
     </div>
   </div>
 
-  <!-- Meta strip: date / valid / lead / customer -->
+  <!-- Meta strip -->
   <div class="doc-meta">
     <div class="mc"><label>Issue Date</label><input type="date" id="meta-date"></div>
     <div class="mc"><label>Valid Until</label><input type="date" id="meta-valid"></div>
@@ -379,7 +318,7 @@ Force majeure and raw material price escalation clauses apply.</textarea>
   <!-- Body -->
   <div class="doc-body">
 
-    <!-- Customer + Quote # row -->
+    <!-- Customer row -->
     <div class="customer-row">
       <div class="cr-left">
         <label>Customer / Party Name</label>
@@ -391,29 +330,31 @@ Force majeure and raw material price escalation clauses apply.</textarea>
       </div>
     </div>
 
-    <!-- Items -->
+    <!-- Items table -->
     <div class="stitle">Items &amp; Specifications <span class="line"></span></div>
     <div class="tbl-wrap">
       <table class="itable" id="itable">
         <thead>
           <tr class="th-main">
-            <th style="width:32px">#</th>
-            <th style="min-width:140px">Item / Description</th>
-            <!-- Size group spanning 3 sub-cols -->
-            <th class="ctr" colspan="3" style="width:180px">Size</th>
-            <th class="rgt" style="width:70px">Weight<br><span style="font-size:.6rem;opacity:.6">(kg)</span></th>
-            <th class="rgt" style="width:75px">Qty</th>
-            <th style="width:60px">Unit</th>
-            <th class="rgt" style="width:90px">Rate / kg</th>
-            <th class="rgt" style="width:95px">Amount</th>
-            <th style="width:26px"></th>
+            <th style="width:30px">#</th>
+            <th style="min-width:130px">Item / Description</th>
+            <!-- Size spans 3 cols — each has own unit toggle -->
+            <th class="ctr" colspan="3" style="min-width:270px">
+              Size &nbsp;<span style="font-size:.58rem;opacity:.55;font-weight:400;">(each field has its own in / mm toggle)</span>
+            </th>
+            <th class="rgt" style="width:68px">Weight<br><span style="font-size:.58rem;opacity:.6;font-weight:400">(kg)</span></th>
+            <th class="rgt" style="width:52px">Qty</th>
+            <th style="width:54px">Unit</th>
+            <th class="rgt" style="width:80px">Rate/kg</th>
+            <th class="rgt" style="width:88px">Amount</th>
+            <th style="width:24px"></th>
           </tr>
           <tr class="th-sub">
             <th></th>
             <th></th>
-            <th class="ctr" style="width:60px">Dia (mm)</th>
-            <th class="ctr" style="width:60px">Length (mm)</th>
-            <th class="ctr" style="width:60px">Bore (mm)</th>
+            <th class="ctr" style="width:90px">Dia</th>
+            <th class="ctr" style="width:90px">Length</th>
+            <th class="ctr" style="width:90px">Bore</th>
             <th></th><th></th><th></th><th></th><th></th><th></th>
           </tr>
         </thead>
@@ -438,7 +379,7 @@ Force majeure and raw material price escalation clauses apply.</textarea>
           <span class="v"><input type="number" id="tax" value="18" min="0" oninput="calcTotals()"> %</span>
         </div>
         <div class="trow">
-          <label>After Tax Subtotal</label>
+          <label>After Tax Amount</label>
           <span class="v"><span class="cur" id="cur2">PKR</span> <span id="after-tax">0.00</span></span>
         </div>
         <div class="trow grand">
@@ -488,12 +429,11 @@ Force majeure and raw material price escalation clauses apply.</textarea>
   <div class="doc-botbar"></div>
 </div><!-- /quote-doc -->
 
-<!-- jsPDF + html2canvas -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
-/* ─── Dates ─── */
+/* ─── Init dates ─── */
 const today = new Date();
 const fmtDate = d => d.toISOString().split('T')[0];
 document.getElementById('meta-date').value = fmtDate(today);
@@ -502,56 +442,100 @@ document.getElementById('meta-valid').value = fmtDate(vd);
 
 /* ─── Toggle settings ─── */
 function toggleSettings(){
-  const body = document.getElementById('sbody');
-  const arr  = document.getElementById('sarr');
-  const hidden = body.classList.toggle('hide');
-  arr.classList.toggle('closed', hidden);
-  arr.textContent = hidden ? '▼' : '▲';
+  const b = document.getElementById('sbody');
+  const a = document.getElementById('sarr');
+  const h = b.classList.toggle('hide');
+  a.classList.toggle('closed', h);
+  a.textContent = h ? '▼' : '▲';
 }
 
 /* ─── Sync settings → document ─── */
 function sync(key){
-  const val = document.getElementById('s-'+key).value;
-  if(key==='company'){
-    document.getElementById('disp-company').textContent = val;
-    document.getElementById('disp-foot-name').textContent = val.toUpperCase();
-  }
-  if(key==='tagline') document.getElementById('disp-tagline').textContent = val;
-  if(key==='addr')    document.getElementById('disp-addr').innerHTML = val.replace(/\n/g,'<br>');
-  if(key==='foot-name')    document.getElementById('disp-foot-name').textContent = val;
-  if(key==='foot-contact') document.getElementById('disp-foot-contact').textContent = val;
+  const v = document.getElementById('s-'+key).value;
+  if(key==='company'){ document.getElementById('disp-company').textContent=v; document.getElementById('disp-foot-name').textContent=v.toUpperCase(); }
+  if(key==='tagline') document.getElementById('disp-tagline').textContent=v;
+  if(key==='addr')    document.getElementById('disp-addr').innerHTML=v.replace(/\n/g,'<br>');
+  if(key==='foot-name')    document.getElementById('disp-foot-name').textContent=v;
+  if(key==='foot-contact') document.getElementById('disp-foot-contact').textContent=v;
 }
-
-function syncTextarea(key){
-  const val = document.getElementById('s-'+key).value;
-  document.getElementById('doc-'+key).value = val;
-}
+function syncTA(key){ document.getElementById('doc-'+key).value = document.getElementById('s-'+key).value; }
 
 /* ─── Logo ─── */
 function uploadLogo(e){
-  const file = e.target.files[0]; if(!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const img = document.getElementById('logo-display');
-    img.src = ev.target.result; img.style.display='block';
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    const i=document.getElementById('logo-display');
+    i.src=ev.target.result; i.style.display='block';
     document.getElementById('logo-ph').style.display='none';
   };
-  reader.readAsDataURL(file);
+  r.readAsDataURL(f);
 }
 function removeLogo(){
-  const img = document.getElementById('logo-display');
-  img.src=''; img.style.display='none';
+  const i=document.getElementById('logo-display');
+  i.src=''; i.style.display='none';
   document.getElementById('logo-ph').style.display='flex';
   document.getElementById('logo-input').value='';
 }
 
 /* ─── Currency ─── */
 function updateCurrency(){
-  const c = document.getElementById('s-currency').value || 'PKR';
-  ['cur1','cur2','cur3'].forEach(id => document.getElementById(id).textContent = c);
+  const c=document.getElementById('s-currency').value||'PKR';
+  ['cur1','cur2','cur3'].forEach(id=>document.getElementById(id).textContent=c);
 }
 
-/* ─── Rows ─── */
+/* ─── Size unit toggle helper ─── */
+// Makes a size cell: number input + in/mm toggle buttons + hidden label for print
+function makeSizeCell(fieldName){
+  const wrap = document.createElement('div');
+  wrap.className = 'size-td';
+
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.placeholder = '—';
+  inp.setAttribute('aria-label', fieldName);
+
+  // unit state: default = 'in'
+  let unit = 'in';
+
+  const lbl = document.createElement('span');
+  lbl.className = 'unit-label';
+  lbl.textContent = 'in';
+
+  const tog = document.createElement('div');
+  tog.className = 'unit-toggle';
+
+  const btnIn = document.createElement('button');
+  btnIn.textContent = 'in';
+  btnIn.type = 'button';
+  btnIn.className = 'active';
+  btnIn.title = 'Inches';
+
+  const btnMm = document.createElement('button');
+  btnMm.textContent = 'mm';
+  btnMm.type = 'button';
+  btnMm.title = 'Millimetres';
+
+  function setUnit(u){
+    unit = u;
+    lbl.textContent = u;
+    btnIn.classList.toggle('active', u==='in');
+    btnMm.classList.toggle('active', u==='mm');
+  }
+  btnIn.onclick = () => setUnit('in');
+  btnMm.onclick = () => setUnit('mm');
+
+  tog.appendChild(btnIn);
+  tog.appendChild(btnMm);
+
+  wrap.appendChild(inp);
+  wrap.appendChild(tog);
+  wrap.appendChild(lbl);
+
+  return wrap;
+}
+
+/* ─── Add row ─── */
 let rc = 0;
 function addRow(){
   rc++;
@@ -559,110 +543,155 @@ function addRow(){
   const tbody = document.getElementById('items-body');
   const tr = document.createElement('tr');
   tr.id = 'r'+n;
-  tr.innerHTML = `
-    <td style="color:#aaa;text-align:center;font-size:.72rem">${n}</td>
-    <td><input type="text" placeholder="e.g. Flywheel Housing – Grey CI GR20"></td>
-    <!-- Size: Dia, Length, Bore -->
-    <td><input type="text" class="ctr-inp size-inp" placeholder="—"></td>
-    <td><input type="text" class="ctr-inp size-inp" placeholder="—"></td>
-    <td><input type="text" class="ctr-inp size-inp" placeholder="—"></td>
-    <!-- Weight -->
-    <td><input type="number" class="weight" value="0" min="0" step="0.001" oninput="calcTotals()"></td>
-    <!-- Qty -->
-    <td><input type="number" class="qty" value="1" min="0" oninput="calcTotals()"></td>
-    <!-- Unit -->
-    <td>
-      <select style="width:100%;border:none;background:transparent;font-family:'Barlow',sans-serif;font-size:.77rem;color:var(--iron);outline:none">
-        <option>Pcs</option><option>Kg</option><option>MT</option><option>Set</option><option>Lot</option>
-      </select>
-    </td>
-    <!-- Rate per kg -->
-    <td><input type="number" class="rate" value="0" min="0" step="0.01" oninput="calcTotals()"></td>
-    <!-- Amount = weight × qty × rate -->
-    <td class="tc" id="amt-${n}">0.00</td>
-    <td><button class="del-btn" onclick="delRow(${n})">✕</button></td>
-  `;
+
+  // #
+  const tdN = document.createElement('td');
+  tdN.style.cssText='color:#aaa;text-align:center;font-size:.72rem';
+  tdN.textContent = n;
+
+  // Description
+  const tdDesc = document.createElement('td');
+  const inpDesc = document.createElement('input');
+  inpDesc.type='text';
+  inpDesc.placeholder='e.g. Flywheel Housing – Grey CI GR20';
+  inpDesc.style.width='100%';
+  tdDesc.appendChild(inpDesc);
+
+  // Size: Dia
+  const tdDia = document.createElement('td');
+  tdDia.appendChild(makeSizeCell('Dia'));
+
+  // Size: Length
+  const tdLen = document.createElement('td');
+  tdLen.appendChild(makeSizeCell('Length'));
+
+  // Size: Bore
+  const tdBore = document.createElement('td');
+  tdBore.appendChild(makeSizeCell('Bore'));
+
+  // Weight
+  const tdW = document.createElement('td');
+  const inpW = document.createElement('input');
+  inpW.type='number'; inpW.className='weight'; inpW.value='0'; inpW.min='0'; inpW.step='0.001';
+  inpW.oninput=calcTotals; inpW.style.width='100%';
+  tdW.appendChild(inpW);
+
+  // Qty
+  const tdQ = document.createElement('td');
+  const inpQ = document.createElement('input');
+  inpQ.type='number'; inpQ.className='qty'; inpQ.value='1'; inpQ.min='0';
+  inpQ.oninput=calcTotals; inpQ.style.width='100%';
+  tdQ.appendChild(inpQ);
+
+  // Unit select
+  const tdU = document.createElement('td');
+  const sel = document.createElement('select');
+  sel.style.cssText='width:100%;border:none;background:transparent;font-family:Barlow,sans-serif;font-size:.77rem;color:var(--iron);outline:none';
+  ['Pcs','Kg','MT','Set','Lot'].forEach(u=>{const o=document.createElement('option');o.textContent=u;sel.appendChild(o);});
+  tdU.appendChild(sel);
+
+  // Rate
+  const tdR = document.createElement('td');
+  const inpR = document.createElement('input');
+  inpR.type='number'; inpR.className='rate'; inpR.value='0'; inpR.min='0'; inpR.step='0.01';
+  inpR.oninput=calcTotals; inpR.style.width='100%';
+  tdR.appendChild(inpR);
+
+  // Amount
+  const tdAmt = document.createElement('td');
+  tdAmt.className='tc'; tdAmt.id='amt-'+n; tdAmt.textContent='0.00';
+
+  // Delete
+  const tdDel = document.createElement('td');
+  const btnDel = document.createElement('button');
+  btnDel.className='del-btn'; btnDel.textContent='✕'; btnDel.onclick=()=>delRow(n);
+  tdDel.appendChild(btnDel);
+
+  [tdN,tdDesc,tdDia,tdLen,tdBore,tdW,tdQ,tdU,tdR,tdAmt,tdDel].forEach(td=>tr.appendChild(td));
   tbody.appendChild(tr);
   calcTotals();
 }
 
 function delRow(n){
-  const el = document.getElementById('r'+n);
+  const el=document.getElementById('r'+n);
   if(el) el.remove();
   calcTotals();
 }
 
-/* ─── Calculations: Amount = Weight(kg) × Qty × Rate ─── */
-function calcTotals(){
-  let sub = 0;
-  document.querySelectorAll('#items-body tr').forEach(tr => {
-    const w = parseFloat(tr.querySelector('.weight')?.value||0);
-    const q = parseFloat(tr.querySelector('.qty')?.value||0);
-    const r = parseFloat(tr.querySelector('.rate')?.value||0);
-    const amt = w * q * r;
-    const cell = tr.querySelector('.tc');
-    if(cell) cell.textContent = fmt(amt);
-    sub += amt;
-  });
-  const disc = parseFloat(document.getElementById('discount').value||0);
-  const tax  = parseFloat(document.getElementById('tax').value||0);
-  const afterDisc = sub * (1 - disc/100);
-  const afterTax  = afterDisc * (1 + tax/100);
-  document.getElementById('subtotal').textContent   = fmt(sub);
-  document.getElementById('after-tax').textContent  = fmt(afterTax);
-  document.getElementById('grand-total').textContent= fmt(afterTax);
-}
-
+/* ─── Calculate: Amount = Weight × Qty × Rate ─── */
 function fmt(n){ return n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+function calcTotals(){
+  let sub=0;
+  document.querySelectorAll('#items-body tr').forEach(tr=>{
+    const w=parseFloat(tr.querySelector('.weight')?.value||0);
+    const q=parseFloat(tr.querySelector('.qty')?.value||0);
+    const r=parseFloat(tr.querySelector('.rate')?.value||0);
+    const amt=w*q*r;
+    const tc=tr.querySelector('.tc');
+    if(tc) tc.textContent=fmt(amt);
+    sub+=amt;
+  });
+  const disc=parseFloat(document.getElementById('discount').value||0);
+  const tax =parseFloat(document.getElementById('tax').value||0);
+  const afterDisc=sub*(1-disc/100);
+  const afterTax =afterDisc*(1+tax/100);
+  document.getElementById('subtotal').textContent  =fmt(sub);
+  document.getElementById('after-tax').textContent =fmt(afterTax);
+  document.getElementById('grand-total').textContent=fmt(afterTax);
+}
 
 /* ─── Reset ─── */
 function resetForm(){
-  if(!confirm('Reset all items and clear the form?')) return;
+  if(!confirm('Clear all items and reset the form?')) return;
   document.getElementById('items-body').innerHTML='';
   rc=0;
   document.getElementById('customer-name').value='';
   addRow(); addRow(); addRow();
 }
 
-/* ─── Init rows ─── */
+/* ─── Init ─── */
 addRow(); addRow(); addRow();
 
-/* ─── PDF ─── */
+/* ─── PDF Download ─── */
 async function downloadPDF(){
-  const panel   = document.getElementById('settings-panel');
-  const addBtn  = document.querySelector('.add-btn');
-  const delBtns = document.querySelectorAll('.del-btn');
-  panel.style.display = 'none';
-  addBtn.style.display = 'none';
+  const panel  =document.getElementById('settings-panel');
+  const addBtn =document.querySelector('.add-btn');
+  const delBtns=document.querySelectorAll('.del-btn');
+  const togBtns=document.querySelectorAll('.unit-toggle');
+  const unitLbls=document.querySelectorAll('.unit-label');
+
+  // hide UI controls
+  panel.style.display='none';
+  addBtn.style.display='none';
   delBtns.forEach(b=>b.style.display='none');
+  togBtns.forEach(b=>b.style.display='none');
+  unitLbls.forEach(l=>l.style.display='inline');
 
   try{
-    const el = document.getElementById('quote-doc');
-    const canvas = await html2canvas(el,{scale:2,useCORS:true,backgroundColor:'#f5f2ee'});
-    const img = canvas.toDataURL('image/png');
-    const {jsPDF} = window.jspdf;
-    const pdf = new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
-    const pw  = pdf.internal.pageSize.getWidth();
-    const ph  = pdf.internal.pageSize.getHeight();
-    const ih  = canvas.height * pw / canvas.width;
-
-    if(ih <= ph){
+    const el=document.getElementById('quote-doc');
+    const canvas=await html2canvas(el,{scale:2,useCORS:true,backgroundColor:'#f5f2ee'});
+    const img=canvas.toDataURL('image/png');
+    const {jsPDF}=window.jspdf;
+    const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+    const pw=pdf.internal.pageSize.getWidth();
+    const ph=pdf.internal.pageSize.getHeight();
+    const ih=canvas.height*pw/canvas.width;
+    if(ih<=ph){
       pdf.addImage(img,'PNG',0,0,pw,ih);
     } else {
       let y=0;
-      while(y < ih){
-        pdf.addImage(img,'PNG',0,-y,pw,ih);
-        y += ph;
-        if(y < ih) pdf.addPage();
-      }
+      while(y<ih){ pdf.addImage(img,'PNG',0,-y,pw,ih); y+=ph; if(y<ih) pdf.addPage(); }
     }
-    const co = (document.getElementById('s-company').value||'Quote').replace(/\s+/g,'_');
-    const ref= document.getElementById('quote-ref').value||'QT';
+    const co=(document.getElementById('s-company').value||'Quote').replace(/\s+/g,'_');
+    const ref=document.getElementById('quote-ref').value||'QT';
     pdf.save(`${co}_${ref}.pdf`);
   } finally {
     panel.style.display='';
     addBtn.style.display='';
     delBtns.forEach(b=>b.style.display='');
+    togBtns.forEach(b=>b.style.display='');
+    unitLbls.forEach(l=>l.style.display='none');
   }
 }
 </script>
