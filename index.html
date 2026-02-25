@@ -22,6 +22,14 @@
   --amber:#d4802a;
   --silver:#c0c8d0;
 
+  /* Table header colors */
+  --th-main-bg: #1a1212;
+  --th-main-fg: #faf8f5;
+  --th-main-fs: 10px;
+  --tb-fg: #1a1212;
+  --tb-border: #d0cbc3;
+  --tb-accent: #8b0000;
+
   /* Font settings — adjustable */
   --fs-base: 13px;
   --fs-sm: 11px;
@@ -128,6 +136,13 @@ body{font-family:'Barlow',sans-serif;background:#b0aba3;color:var(--ink);min-hei
 .sec-toggle-row label:first-child{font-size:.53rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--silver);}
 /* hidden doc section */
 .sec-hidden{display:none!important;}
+/* color picker row */
+.cprow{display:flex;flex-direction:column;gap:2px;margin-bottom:7px;}
+.cprow:last-child{margin-bottom:0;}
+.cprow label{font-size:.52rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--silver);}
+.cprow-inner{display:flex;align-items:center;gap:7px;}
+.cprow-inner input[type=color]{width:34px;height:26px;border:1px solid #363636;border-radius:2px;background:#232323;cursor:pointer;padding:1px 2px;}
+.cprow-inner span{font-size:.72rem;color:#aaa;font-family:'Barlow Condensed',sans-serif;}
 
 /* ═══ DOCUMENT ═══ */
 #QD{background:var(--warm);max-width:1100px;margin:0 auto;box-shadow:0 6px 36px rgba(0,0,0,.28);overflow:hidden;font-size:var(--fs-base);}
@@ -179,13 +194,13 @@ body{font-family:'Barlow',sans-serif;background:#b0aba3;color:var(--ink);min-hei
 /* TABLE */
 .twrap{overflow-x:auto;margin-bottom:10px;}
 table.it{width:100%;border-collapse:collapse;font-size:var(--fs-sm);}
-table.it thead tr.thm{background:var(--ink);color:#fff;}
-table.it th{padding:7px 8px;text-align:left;font-family:'Barlow Condensed',sans-serif;font-size:.64rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;white-space:nowrap;border:1px solid #555;}
+table.it thead tr.thm{background:var(--th-main-bg);color:var(--th-main-fg);}
+table.it th{padding:7px 8px;text-align:left;font-family:'Barlow Condensed',sans-serif;font-size:var(--th-main-fs);letter-spacing:1.5px;text-transform:uppercase;font-weight:600;white-space:nowrap;border:1px solid #555;}
 table.it th.rgt{text-align:right;}table.it th.ctr{text-align:center;}
 table.it tbody tr{border-bottom:1px solid var(--mgray);}
 table.it tbody tr:nth-child(even){background:rgba(0,0,0,.018);}
-table.it td{padding:5px 8px;vertical-align:middle;border:1px solid var(--mgray);}
-table.it td input,table.it td select{border:none;background:transparent;font-family:'Barlow',sans-serif;font-size:var(--fs-sm);color:var(--ink);outline:none;padding:1px 0;width:100%;}
+table.it td{padding:5px 8px;vertical-align:middle;border:1px solid var(--tb-border);color:var(--tb-fg);}
+table.it td input,table.it td select{border:none;background:transparent;font-family:'Barlow',sans-serif;font-size:var(--fs-sm);color:var(--tb-fg);outline:none;padding:1px 0;width:100%;}
 table.it td input[type="number"]{text-align:right;}
 .tc{text-align:right;font-weight:var(--fw-label);color:var(--accent);font-family:'Barlow Condensed',sans-serif;font-size:.84rem;white-space:nowrap;}
 .del-btn{background:none;border:none;cursor:pointer;color:#ccc;font-size:.78rem;padding:0 2px;}
@@ -193,7 +208,7 @@ table.it td input[type="number"]{text-align:right;}
 .sno-td{color:#888;text-align:center;font-size:var(--fs-xs);width:28px;}
 
 /* amount highlight */
-.amt-td{text-align:right;font-weight:700;color:var(--accent);font-family:'Barlow Condensed',sans-serif;font-size:.88rem;white-space:nowrap;}
+.amt-td{text-align:right;font-weight:700;color:var(--tb-accent);font-family:'Barlow Condensed',sans-serif;font-size:.88rem;white-space:nowrap;}
 .amt-td .rate-note{font-size:.58rem;color:#888;font-weight:400;display:block;}
 
 /* foot totals */
@@ -312,6 +327,7 @@ table.it td input[type="number"]{text-align:right;}
       <div class="stab"         onclick="stab('totals')">💰 Totals</div>
       <div class="stab"         onclick="stab('terms')">📝 Terms</div>
       <div class="stab"         onclick="stab('font')">🔤 Font</div>
+      <div class="stab"         onclick="stab('table')">🎨 Table</div>
     </div>
 
     <!-- Company -->
@@ -508,6 +524,124 @@ table.it td input[type="number"]{text-align:right;}
             <div class="sgt">Preview</div>
             <p id="font-preview" style="font-size:.75rem;color:#aaa;line-height:1.5">Roll Description: Ø330×280×117mm<br>Ni-Cr-Mn-Mo-Cu Chilled Cast Iron<br>Approx Wt: 165 Kg/Sleeve</p>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table Styling -->
+    <div class="spane" id="pane-table">
+      <div style="padding:12px 0 4px">
+        <p style="font-size:.63rem;color:#444;letter-spacing:1px;margin-bottom:12px;">Customize table header colors, fonts &amp; sub-row appearance</p>
+        <div class="sgrid">
+
+          <!-- GROUP HEADER ROW -->
+          <div class="sg">
+            <div class="sgt">📌 Group Header Row</div>
+            <p style="font-size:.58rem;color:#666;margin-bottom:8px;line-height:1.4">"SIZE (IN/MM PER FIELD)" — the top spanning header</p>
+            <div class="cprow">
+              <label>Background Color</label>
+              <div class="cprow-inner">
+                <input type="color" id="sh-bg" value="#1a1212" oninput="renderHeaders();save()">
+                <span id="sh-bg-v">#1a1212</span>
+              </div>
+            </div>
+            <div class="cprow">
+              <label>Text Color</label>
+              <div class="cprow-inner">
+                <input type="color" id="sh-fg" value="#ffffff" oninput="renderHeaders();save()">
+                <span id="sh-fg-v">#ffffff</span>
+              </div>
+            </div>
+            <div class="cprow">
+              <label>Font Size</label>
+              <div class="fslider" style="margin-top:2px">
+                <input type="range" id="sh-fs" min="7" max="18" value="10" oninput="renderHeaders();save()">
+                <span id="sh-fs-v">10px</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUB-HEADER ROW -->
+          <div class="sg">
+            <div class="sgt">📐 Sub-Row (DIA / LENGTH / BORE)</div>
+            <p style="font-size:.58rem;color:#666;margin-bottom:8px;line-height:1.4">The second row showing individual size column labels</p>
+            <div class="cprow">
+              <label>Background Color</label>
+              <div class="cprow-inner">
+                <input type="color" id="sh-sub-bg" value="#273d4d" oninput="renderHeaders();save()">
+                <span id="sh-sub-bg-v">#273d4d</span>
+              </div>
+            </div>
+            <div class="cprow">
+              <label>Text Color</label>
+              <div class="cprow-inner">
+                <input type="color" id="sh-sub-fg" value="#8aabb8" oninput="renderHeaders();save()">
+                <span id="sh-sub-fg-v">#8aabb8</span>
+              </div>
+            </div>
+            <div class="cprow">
+              <label>Font Size</label>
+              <div class="fslider" style="margin-top:2px">
+                <input type="range" id="sh-sub-fs" min="7" max="16" value="9" oninput="renderHeaders();save()">
+                <span id="sh-sub-fs-v">9px</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- MAIN HEADER ROW -->
+          <div class="sg">
+            <div class="sgt">🗂 Main Header Row</div>
+            <p style="font-size:.58rem;color:#666;margin-bottom:8px;line-height:1.4">All other column headers (Roll Description, Qty, Amount…)</p>
+            <div class="cprow">
+              <label>Background Color</label>
+              <div class="cprow-inner">
+                <input type="color" id="th-main-bg" value="#1a1212" oninput="updateTableColors();save()">
+                <span id="th-main-bg-v">#1a1212</span>
+              </div>
+            </div>
+            <div class="cprow">
+              <label>Text Color</label>
+              <div class="cprow-inner">
+                <input type="color" id="th-main-fg" value="#faf8f5" oninput="updateTableColors();save()">
+                <span id="th-main-fg-v">#faf8f5</span>
+              </div>
+            </div>
+            <div class="cprow">
+              <label>Font Size</label>
+              <div class="fslider" style="margin-top:2px">
+                <input type="range" id="th-main-fs" min="7" max="16" value="10" oninput="updateTableColors();save()">
+                <span id="th-main-fs-v">10px</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- TABLE BODY -->
+          <div class="sg">
+            <div class="sgt">📄 Table Body Rows</div>
+            <p style="font-size:.58rem;color:#666;margin-bottom:8px;line-height:1.4">Data rows, borders and alternating row tint</p>
+            <div class="cprow">
+              <label>Row Text Color</label>
+              <div class="cprow-inner">
+                <input type="color" id="tb-fg" value="#1a1212" oninput="updateTableColors();save()">
+                <span id="tb-fg-v">#1a1212</span>
+              </div>
+            </div>
+            <div class="cprow">
+              <label>Border Color</label>
+              <div class="cprow-inner">
+                <input type="color" id="tb-border" value="#d0cbc3" oninput="updateTableColors();save()">
+                <span id="tb-border-v">#d0cbc3</span>
+              </div>
+            </div>
+            <div class="cprow">
+              <label>Amount / Accent Color</label>
+              <div class="cprow-inner">
+                <input type="color" id="tb-accent" value="#8b0000" oninput="updateTableColors();save()">
+                <span id="tb-accent-v">#8b0000</span>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -766,6 +900,22 @@ function save(){
       thanks: document.getElementById('tog-thanks')?.checked !== false,
       notes: document.getElementById('tog-notes')?.checked === true,
     },
+    sizeHdr:{
+      bg:    document.getElementById('sh-bg')?.value    || '#1a1212',
+      fg:    document.getElementById('sh-fg')?.value    || '#ffffff',
+      fs:    document.getElementById('sh-fs')?.value    || '10',
+      subBg: document.getElementById('sh-sub-bg')?.value|| '#273d4d',
+      subFg: document.getElementById('sh-sub-fg')?.value|| '#8aabb8',
+      subFs: document.getElementById('sh-sub-fs')?.value|| '9',
+    },
+    tableColors:{
+      mainBg: document.getElementById('th-main-bg')?.value || '#1a1212',
+      mainFg: document.getElementById('th-main-fg')?.value || '#faf8f5',
+      mainFs: document.getElementById('th-main-fs')?.value || '10',
+      tbFg:   document.getElementById('tb-fg')?.value     || '#1a1212',
+      tbBord: document.getElementById('tb-border')?.value  || '#d0cbc3',
+      tbAcc:  document.getElementById('tb-accent')?.value  || '#8b0000',
+    },
     panelOpen:!document.getElementById('sbody').classList.contains('hide'),
     fsBase:parseFloat(document.getElementById('fs-base-r').value),
     fsSm:parseFloat(document.getElementById('fs-sm-r').value),
@@ -810,7 +960,22 @@ function init(){
   document.getElementById('fw-body-r').value=s.fwBody||400;
   document.getElementById('fw-label-r').value=s.fwLabel||600;
   document.getElementById('lh-r').value=s.lh||1.55;
+  // restore size header settings
+  if(s.sizeHdr){
+    const sh=s.sizeHdr;
+    const sv=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v;};
+    sv('sh-bg',sh.bg||'#1a1212'); sv('sh-fg',sh.fg||'#ffffff'); sv('sh-fs',sh.fs||'10');
+    sv('sh-sub-bg',sh.subBg||'#273d4d'); sv('sh-sub-fg',sh.subFg||'#8aabb8'); sv('sh-sub-fs',sh.subFs||'9');
+  }
+  // restore table colors
+  if(s.tableColors){
+    const tc=s.tableColors;
+    const sv=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v;};
+    sv('th-main-bg',tc.mainBg||'#1a1212'); sv('th-main-fg',tc.mainFg||'#faf8f5'); sv('th-main-fs',tc.mainFs||'10');
+    sv('tb-fg',tc.tbFg||'#1a1212'); sv('tb-border',tc.tbBord||'#d0cbc3'); sv('tb-accent',tc.tbAcc||'#8b0000');
+  }
   updateFonts(true);
+  updateTableColors(true);
 
   applyToDom(s);
   loadLogo();
@@ -918,6 +1083,35 @@ function updateFonts(silent){
 }
 
 /* ═══════════════════ LOGO ═══════════════════ */
+function updateTableColors(silent){
+  const root=document.documentElement;
+  const gv=(id,fb)=>{const el=document.getElementById(id);return el?el.value:fb;};
+  const sv=(vid,val)=>{const el=document.getElementById(vid);if(el)el.textContent=val;};
+
+  const mainBg=gv('th-main-bg','#1a1212');
+  const mainFg=gv('th-main-fg','#faf8f5');
+  const mainFs=gv('th-main-fs','10');
+  const tbFg  =gv('tb-fg','#1a1212');
+  const tbBord=gv('tb-border','#d0cbc3');
+  const tbAcc =gv('tb-accent','#8b0000');
+
+  root.style.setProperty('--th-main-bg', mainBg);
+  root.style.setProperty('--th-main-fg', mainFg);
+  root.style.setProperty('--th-main-fs', mainFs+'px');
+  root.style.setProperty('--tb-fg',      tbFg);
+  root.style.setProperty('--tb-border',  tbBord);
+  root.style.setProperty('--tb-accent',  tbAcc);
+
+  sv('th-main-bg-v',mainBg); sv('th-main-fg-v',mainFg);
+  sv('th-main-fs-v',mainFs+'px');
+  sv('tb-fg-v',tbFg); sv('tb-border-v',tbBord); sv('tb-acc-v',tbAcc);
+  sv('tb-accent-v',tbAcc);
+
+  // Re-render to pick up new main header colors
+  renderHeaders();
+  if(!silent) save();
+}
+
 /* section visibility toggle */
 function toggleSection(key, visible, silent){
   const sec = document.getElementById('sec-' + key);
@@ -964,7 +1158,7 @@ function toggleSP(){
   a.classList.toggle('closed',h); a.textContent=h?'▼':'▲'; save();
 }
 function stab(name){
-  const tabs=['company','columns','widths','totals','terms','font'];
+  const tabs=['company','columns','widths','totals','terms','font','table'];
   document.querySelectorAll('.stab').forEach((t,i)=>t.classList.toggle('active',tabs[i]===name));
   document.querySelectorAll('.spane').forEach(p=>p.classList.remove('active'));
   document.getElementById('pane-'+name).classList.add('active');
@@ -1097,10 +1291,29 @@ function addTotalRow(){
 }
 
 /* ═══════════════════ RENDER HEADERS ═══════════════════ */
+function getSHVal(id, fallback){
+  const el=document.getElementById(id);
+  return el ? el.value : fallback;
+}
 function renderHeaders(){
   const sizeKeys=['dia','len','bore'];
   const visSizes=COLS.filter(c=>sizeKeys.includes(c.key)&&c.vis);
   const hasSizes=visSizes.length>0;
+
+  // Read size-header style settings
+  const shBg    = getSHVal('sh-bg','#1a1212');
+  const shFg    = getSHVal('sh-fg','#ffffff');
+  const shFs    = getSHVal('sh-fs','10');
+  const shSubBg = getSHVal('sh-sub-bg','#273d4d');
+  const shSubFg = getSHVal('sh-sub-fg','#8aabb8');
+  const shSubFs = getSHVal('sh-sub-fs','9');
+
+  // Update live color swatches
+  function updSwatch(vid, val){ const el=document.getElementById(vid); if(el) el.textContent=val; }
+  updSwatch('sh-bg-v',shBg); updSwatch('sh-fg-v',shFg);
+  updSwatch('sh-sub-bg-v',shSubBg); updSwatch('sh-sub-fg-v',shSubFg);
+  document.getElementById('sh-fs-v') && (document.getElementById('sh-fs-v').textContent=shFs+'px');
+  document.getElementById('sh-sub-fs-v') && (document.getElementById('sh-sub-fs-v').textContent=shSubFs+'px');
 
   // Rebuild both header rows from scratch
   const thead=document.querySelector('#itable thead');
@@ -1108,20 +1321,20 @@ function renderHeaders(){
 
   const rowTop=document.createElement('tr');rowTop.className='thm';rowTop.id='thm';
   const rowSub=hasSizes ? document.createElement('tr') : null;
-  if(rowSub){rowSub.id='ths';rowSub.style.background='#273d4d';}
+  if(rowSub){rowSub.id='ths';rowSub.style.background=shSubBg;}
 
-  // Helper: make a th
   function mkTh(txt,opts={}){
     const th=document.createElement('th');
     th.textContent=txt||'';
-    if(opts.w) th.style.width=opts.w;
-    if(opts.cls) th.className=opts.cls;
-    if(opts.span) th.colSpan=opts.span;
+    if(opts.w)     th.style.width=opts.w;
+    if(opts.cls)   th.className=opts.cls;
+    if(opts.span)  th.colSpan=opts.span;
     if(opts.color) th.style.color=opts.color;
-    if(opts.style) th.style.cssText+=';'+opts.style;
+    if(opts.bg)    th.style.background=opts.bg;
+    if(opts.fs)    th.style.fontSize=opts.fs;
+    if(opts.extra) Object.assign(th.style, opts.extra);
     return th;
   }
-  // Helper: make empty placeholder th for sub-row
   function mkEmpty(w){
     const th=document.createElement('th');
     if(w) th.style.width=w;
@@ -1135,27 +1348,30 @@ function renderHeaders(){
     const ws=getWpx(col);
 
     if(sizeKeys.includes(col.key)){
-      // First size col triggers the group header on top row
       if(!sizeGroupAdded){
-        const grpTh=mkTh('SIZE (IN/MM PER FIELD)',{cls:'ctr',span:visSizes.length});
+        const grpTh=mkTh('SIZE (IN/MM PER FIELD)',{
+          cls:'ctr', span:visSizes.length,
+          bg:shBg, color:shFg, fs:shFs+'px',
+          extra:{letterSpacing:'2px',fontWeight:'700'}
+        });
         rowTop.appendChild(grpTh);
         sizeGroupAdded=true;
       }
-      // Sub-row: individual size label
       if(rowSub){
-        const subTh=mkTh(col.label,{cls:'ctr',w:ws,color:'#8aabb8',style:'font-size:.59rem;letter-spacing:1px;font-weight:400;padding:4px 6px;border-right:1px solid rgba(255,255,255,.05)'});
+        const subTh=mkTh(col.label,{
+          cls:'ctr', w:ws,
+          color:shSubFg, fs:shSubFs+'px',
+          extra:{letterSpacing:'1px',fontWeight:'500',padding:'4px 6px',borderRight:'1px solid rgba(255,255,255,.08)'}
+        });
         rowSub.appendChild(subTh);
       }
     } else {
-      // Normal column — top row gets the label
       const cls=['weight','qty','rate','amount'].includes(col.key)?'rgt':'';
       rowTop.appendChild(mkTh(col.label,{cls,w:ws}));
-      // Sub-row gets an empty placeholder spanning 1 col
       if(rowSub) rowSub.appendChild(mkEmpty(ws));
     }
   });
 
-  // Delete button column
   rowTop.appendChild(mkTh('',{w:'22px'}));
   if(rowSub) rowSub.appendChild(mkEmpty('22px'));
 
@@ -1427,6 +1643,22 @@ function getSettingsObj(){
       warranty: document.getElementById('tog-warranty')?.checked !== false,
       thanks: document.getElementById('tog-thanks')?.checked !== false,
       notes: document.getElementById('tog-notes')?.checked === true,
+    },
+    sizeHdr:{
+      bg:    document.getElementById('sh-bg')?.value    || '#1a1212',
+      fg:    document.getElementById('sh-fg')?.value    || '#ffffff',
+      fs:    document.getElementById('sh-fs')?.value    || '10',
+      subBg: document.getElementById('sh-sub-bg')?.value|| '#273d4d',
+      subFg: document.getElementById('sh-sub-fg')?.value|| '#8aabb8',
+      subFs: document.getElementById('sh-sub-fs')?.value|| '9',
+    },
+    tableColors:{
+      mainBg: document.getElementById('th-main-bg')?.value || '#1a1212',
+      mainFg: document.getElementById('th-main-fg')?.value || '#faf8f5',
+      mainFs: document.getElementById('th-main-fs')?.value || '10',
+      tbFg:   document.getElementById('tb-fg')?.value     || '#1a1212',
+      tbBord: document.getElementById('tb-border')?.value  || '#d0cbc3',
+      tbAcc:  document.getElementById('tb-accent')?.value  || '#8b0000',
     },
     panelOpen:!document.getElementById('sbody').classList.contains('hide'),
     fsBase:parseFloat(document.getElementById('fs-base-r').value),
