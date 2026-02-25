@@ -279,23 +279,124 @@ table.it td input[type="number"]{text-align:right;}
 .ref-field label{font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:#888;white-space:nowrap;}
 .ref-field input{border:none;border-bottom:1px solid var(--mgray);background:transparent;font-family:'Barlow',sans-serif;font-size:.8rem;outline:none;color:var(--ink);padding:1px 0;width:130px;}
 
+/* ═══ MOBILE CARD TABLE ═══ */
+.mob-card{display:none;}
+.mob-card-row{background:var(--warm);border:1px solid var(--mgray);border-left:4px solid var(--accent);border-radius:4px;padding:12px 12px 10px;margin-bottom:10px;position:relative;box-shadow:0 1px 4px rgba(0,0,0,.07);}
+.mob-card-row:nth-child(even){background:#f5f1ec;}
+.mob-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;}
+.mob-card-field{display:flex;flex-direction:column;gap:3px;}
+.mob-card-field.full{grid-column:1/-1;}
+.mob-card-lbl{font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;color:#888;font-family:'Barlow Condensed',sans-serif;font-weight:600;}
+.mob-card-field input,.mob-card-field select{border:none;border-bottom:1.5px solid var(--mgray);background:transparent;font-family:'Barlow',sans-serif;font-size:1rem;color:var(--ink);outline:none;padding:5px 0;width:100%;min-height:36px;-webkit-appearance:none;}
+.mob-card-field input:focus,.mob-card-field select:focus{border-bottom-color:var(--accent);}
+.mob-card-field input[type=number]{text-align:right;}
+.mob-card-amt-row{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--lgray);margin-top:4px;padding-top:8px;}
+.mob-card-amt-lbl{font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;color:#888;font-family:'Barlow Condensed',sans-serif;}
+.mob-card-amt{font-family:'Barlow Condensed',sans-serif;font-size:1.15rem;font-weight:700;color:var(--accent);}
+.mob-card-rate-note{font-size:.65rem;color:#aaa;font-family:'Barlow',sans-serif;}
+.mob-card-del{position:absolute;top:10px;right:10px;background:rgba(139,0,0,.08);border:none;color:var(--accent);font-size:1rem;cursor:pointer;padding:4px 8px;line-height:1;border-radius:3px;}
+.mob-card-del:active{background:var(--accent);color:#fff;}
+.mob-card-hdr{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--lgray);}
+.mob-card-sno{background:var(--ink);color:var(--warm);font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1px;padding:2px 7px;border-radius:2px;}
+.mob-card-stitle{font-size:.65rem;color:#888;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase;}
+.mob-add-btn{width:100%;padding:13px;background:none;border:2px dashed var(--steel);color:var(--steel);font-family:'Barlow Condensed',sans-serif;font-size:.82rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:3px;margin-top:6px;display:none;}
+.mob-add-btn:active{background:var(--steel);color:#fff;}
+
+/* touch drag — visual feedback */
+.citem,.trow-item{touch-action:manipulation;cursor:grab;}
+.citem.touch-drag,.trow-item.touch-drag{opacity:.45;box-shadow:0 4px 16px rgba(0,0,0,.4);transform:scale(.98);z-index:99;position:relative;}
+.citem.touch-over{border-color:var(--amber)!important;background:#1e1e0a!important;}
+.trow-item.touch-over{border-color:var(--amber)!important;background:#1a1a0a!important;}
+.drag-ghost{position:fixed;pointer-events:none;z-index:999;opacity:.85;border-radius:3px;box-shadow:0 6px 24px rgba(0,0,0,.5);background:#2a2a2a;padding:10px 14px;font-family:'Barlow Condensed',sans-serif;font-size:.75rem;color:var(--amber);letter-spacing:2px;text-transform:uppercase;max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
 @media(max-width:680px){
-  body{padding:5px;}
+  body{padding:4px;font-size:15px;} /* slightly bigger base for mobile readability */
+
+  /* ── Settings panel ── */
+  .stbar{padding:12px 14px;}
+  .stbar h2{font-size:.78rem;letter-spacing:1.5px;}
+  .sbadge{display:none;}
+  .sbody{padding:12px 12px 16px;}
+  .stabs{gap:0;-webkit-overflow-scrolling:touch;}
+  .stab{padding:12px 12px;font-size:.65rem;letter-spacing:1px;min-width:60px;text-align:center;}
+  .sgrid{grid-template-columns:1fr;}
+  .sg{padding:12px;}
+  .sf input,.sf textarea,.sf select{font-size:.9rem;padding:6px 8px;min-height:38px;}
+  .abar{gap:8px;}
+  .abar .btn{flex:1 1 calc(50% - 4px);padding:12px 8px;font-size:.75rem;min-height:44px;}
+  .font-grid{grid-template-columns:1fr;}
+  .fslider input[type=range]{height:40px;-webkit-appearance:none;appearance:none;}
+
+  /* Terms pane: stack to single column */
+  #pane-terms > div{grid-template-columns:1fr !important;}
+
+  /* col/trow manager — bigger touch targets for drag */
+  .citem{padding:13px 12px;min-height:50px;border-radius:3px;}
+  .cname{font-size:.75rem;}
+  .cdh{font-size:1.1rem;padding-right:4px;color:#666;}
+  .trow-item{padding:13px 12px;min-height:50px;}
+  .trow-item input.trow-label-inp{font-size:.88rem;padding:6px 8px;min-height:38px;}
+
+  /* tsw toggle — bigger */
+  .tsw{width:42px;height:22px;}
+  .tsl:before{width:15px;height:15px;left:3px;top:3px;}
+  .tsw input:checked+.tsl:before{transform:translateX(20px);}
+
+  /* ── Document ── */
   .header-top{flex-direction:column;gap:10px;}
-  .cert-block{flex-direction:row;flex-wrap:wrap;justify-content:flex-start;align-items:center;min-width:0;}
+  .cert-block{flex-direction:row;flex-wrap:wrap;justify-content:flex-start;align-items:center;min-width:0;gap:6px;}
+  #dc-big{font-size:1.55rem;}
+  #dc-tag{font-size:.72rem;}
+  .addr-block{font-size:.78rem;line-height:1.8;}
   .doc-meta{grid-template-columns:1fr 1fr;}
-  .mc{border-right:none;border-bottom:1px solid rgba(255,255,255,.08);padding:7px 10px;}
+  .mc{border-right:none;border-bottom:1px solid rgba(255,255,255,.08);padding:9px 11px;}
   .mc:nth-child(odd){border-right:1px solid rgba(255,255,255,.08);}
+  .mc label{font-size:.58rem;}
+  .mc input{font-size:.9rem;min-height:34px;}
   .dbody{padding:12px 12px;}
-  .twrap{margin:0 -12px;padding:0 12px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
-  table.it{min-width:500px;font-size:.7rem;}
+
+  /* Customer / ref inputs */
+  .customer-block input.cust-in{font-size:1.05rem;min-height:40px;}
+  .ref-box{flex-direction:column;gap:8px;align-items:flex-start;}
+  .ref-field input{font-size:.95rem;min-height:34px;width:100%;}
+
+  /* Dear block textarea */
+  .dear-block textarea{font-size:.92rem;min-height:58px;line-height:1.7;}
+
+  /* ── TABLE: hide desktop table, show mobile cards ── */
+  .twrap{display:none !important;}
+  .add-btn{display:none !important;}
+  .mob-card{display:block;}
+  .mob-add-btn{display:block !important;}
+
+  /* Terms section */
+  .terms-list-view li{font-size:.88rem;line-height:1.8;}
+  .payment-block textarea,.warranty-block textarea,.thank-block textarea{font-size:.9rem;}
+
+  /* ── Totals ── */
   .sum-wrap{justify-content:stretch;}
   .sumbox{width:100%;min-width:0;}
-  .doc-footer-strip{flex-direction:column;gap:5px;text-align:center;padding:8px 12px;}
+  .srow{padding:10px 14px;font-size:calc(var(--fs-sum) * 1.05);}
+  .srow.grand{padding:13px 14px;}
+
+  /* ── Signatures ── */
+  .sig-name input{font-size:.95rem;}
+
+  /* ── Footer ── */
+  .doc-footer-strip{flex-direction:column;gap:4px;text-align:center;padding:8px 10px;}
   .footer-contact{text-align:center;}
-  #dc-big{font-size:1.5rem;}
-  .btn{flex:1 1 calc(50% - 4px);}
-  .font-grid{grid-template-columns:1fr;}
+  .footer-manufactures{font-size:.58rem;}
+}
+
+@media(max-width:420px){
+  .abar .btn{flex:1 1 100%;}
+  .doc-meta{grid-template-columns:1fr;}
+  .mc:nth-child(odd){border-right:none;}
+  .mc{border-bottom:1px solid rgba(255,255,255,.08);}
+  .mc:last-child{border-bottom:none;}
+  #dc-big{font-size:1.25rem;}
+  .mob-card-grid{grid-template-columns:1fr;}
+  .mob-card-field.full{grid-column:1/-1;}
 }
 @media print{
   body{background:#fff;padding:0;}
@@ -306,7 +407,76 @@ table.it td input[type="number"]{text-align:right;}
   input,select,textarea{border-color:transparent!important;background:transparent!important;}
   .mc input{border-bottom-color:rgba(255,255,255,.18)!important;}
   .srow.disabled{display:none;}
+  #pdf-modal{display:none!important;}
   @page{margin:0;size:A4;}
+}
+
+/* ═══ PDF PREVIEW MODAL ═══ */
+#pdf-modal{
+  display:none;position:fixed;inset:0;z-index:9999;
+  background:rgba(0,0,0,.82);
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  padding:0;
+  overflow:hidden;
+}
+#pdf-modal.open{display:flex;}
+.pdf-modal-bar{
+  width:100%;background:#111;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 16px;gap:10px;flex-shrink:0;
+  border-bottom:2px solid var(--accent);
+  flex-wrap:wrap;
+}
+.pdf-modal-bar h3{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:.82rem;letter-spacing:3px;text-transform:uppercase;
+  color:var(--amber);flex:1;
+}
+.pdf-modal-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.pdf-modal-actions button{
+  padding:8px 16px;font-family:'Barlow Condensed',sans-serif;
+  font-size:.75rem;letter-spacing:2px;text-transform:uppercase;
+  border:none;cursor:pointer;border-radius:2px;font-weight:600;
+}
+.btn-pdf-dl{background:var(--accent);color:#fff;}
+.btn-pdf-dl:hover{background:#6b0000;}
+.btn-pdf-cl{background:#2a2a2a;color:#888;border:1px solid #3a3a3a;}
+.btn-pdf-cl:hover{background:#333;color:#ccc;}
+.pdf-modal-scroll{
+  flex:1;width:100%;overflow:auto;
+  display:flex;align-items:flex-start;justify-content:center;
+  padding:16px;
+  -webkit-overflow-scrolling:touch;
+}
+.pdf-modal-pages{display:flex;flex-direction:column;gap:12px;align-items:center;}
+.pdf-page-img{
+  display:block;
+  box-shadow:0 4px 24px rgba(0,0,0,.5);
+  max-width:min(860px,calc(100vw - 32px));
+  width:100%;
+  height:auto;
+  background:#fff;
+}
+.pdf-modal-loading{
+  color:#aaa;font-family:'Barlow Condensed',sans-serif;
+  font-size:.85rem;letter-spacing:2px;text-transform:uppercase;
+  padding:40px;text-align:center;
+}
+.pdf-modal-loading::after{
+  content:'';display:block;width:32px;height:32px;
+  border:3px solid #333;border-top-color:var(--amber);
+  border-radius:50%;margin:16px auto 0;
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+@media(max-width:680px){
+  .pdf-modal-bar{padding:8px 10px;}
+  .pdf-modal-bar h3{font-size:.7rem;width:100%;}
+  .pdf-modal-actions{width:100%;}
+  .pdf-modal-actions button{flex:1;padding:10px 8px;font-size:.7rem;}
+  .pdf-modal-scroll{padding:8px;}
 }
 </style>
 </head>
@@ -376,7 +546,7 @@ table.it td input[type="number"]{text-align:right;}
           <div class="sf"><label>Signatory Name</label><input id="ssign" value="Engr. Mian Khurram Akram" oninput="document.getElementById('sig-name-inp').value=this.value;save()"></div>
         </div>
         <div class="abar swide">
-          <button class="btn btn-pdf" onclick="downloadPDF()">⬇ Download PDF</button>
+          <button class="btn btn-pdf" onclick="openPDFPreview()">👁 Preview &amp; Download PDF</button>
           <button class="btn btn-print" onclick="window.print()">🖨 Print</button>
           <button class="btn btn-rf" onclick="resetForm()">↺ Reset Form</button>
           <button class="btn btn-rs" onclick="resetAll()">⚠ Reset All</button>
@@ -734,6 +904,10 @@ Please refer to the telephonic talk and your visit to the Office; we are pleased
       </div>
       <button class="add-btn" onclick="addRow()">+ Add Item</button>
     </div>
+
+    <!-- MOBILE CARD VIEW (shown on mobile instead of table) -->
+    <div class="mob-card" id="mob-card-container"></div>
+    <button class="mob-add-btn" onclick="addRow()">+ Add Item</button>
 
     <!-- TOTALS BOX -->
     <div class="sum-wrap">
@@ -1194,7 +1368,7 @@ function renderTermsView(){
 
 /* ═══════════════════ COLUMN MANAGER ═══════════════════ */
 function buildColManager(){
-  const list=document.getElementById('clist'); list.innerHTML='';
+  const list=document.getElementById('clist'); list.innerHTML=''; list._tdBound=false;
   COLS.forEach(col=>{
     const item=document.createElement('div'); item.className='citem'; item.draggable=true; item.dataset.key=col.key;
     item.innerHTML=`<span class="cdh">☰</span>
@@ -1207,6 +1381,7 @@ function buildColManager(){
     item.addEventListener('drop',e=>{e.preventDefault();item.classList.remove('drag-over');colReorder(_dragKey,col.key);});
     list.appendChild(item);
   });
+  setTimeout(()=>addTouchDrag('clist',(f,t)=>colReorder(f,t)),0);
 }
 let _dragKey=null;
 function colVis(key,v){const c=COLS.find(x=>x.key===key);if(c&&!c.fixed)c.vis=v;renderHeaders();refreshRows();renderFootTotals();save();}
@@ -1274,6 +1449,9 @@ function buildTrowsManager(){
     }
     mgr.appendChild(item);
   });
+  const mgr2 = document.getElementById('trows-mgr');
+  if(mgr2) mgr2._tdBound = false;
+  setTimeout(()=>addTouchDrag('trows-mgr',(f,t)=>trReorder(f,t)),0);
 }
 function trLabel(id,v){const r=TROWS.find(t=>t.id===id);if(r)r.label=v;renderSumBox();save();}
 function trVis(id,v){const r=TROWS.find(t=>t.id===id);if(r)r.vis=v;renderSumBox();save();}
@@ -1479,9 +1657,22 @@ function addRow(){
   tr._cells=buildCells(n);
   renderRow(tr,n);
   document.getElementById('tbody').appendChild(tr);
+  // Also add mobile card if on mobile
+  if(isMobile()){
+    const card=buildMobCard(n);
+    const container=document.getElementById('mob-card-container');
+    if(container) container.appendChild(card);
+  }
   calc();
 }
-function delRow(n){const el=document.getElementById('r'+n);if(el)el.remove();calc();}
+function delRow(n){
+  const el=document.getElementById('r'+n);if(el)el.remove();
+  // Remove mobile card if exists
+  const card=_cards[n];
+  if(card&&card.parentNode) card.parentNode.removeChild(card);
+  delete _cards[n];
+  calc();
+}
 function refreshRows(){document.querySelectorAll('#tbody tr').forEach(tr=>{if(tr._cells){const n=parseInt(tr.id.replace('r',''));renderRow(tr,n);}});calc();}
 
 /* ═══════════════════ CALC ═══════════════════ */
@@ -1587,40 +1778,226 @@ function resetForm(){
 }
 
 /* ═══════════════════ PDF ═══════════════════ */
-async function downloadPDF(){
+/* ═══════════════════ PDF PREVIEW & DOWNLOAD ═══════════════════ */
+let _pdfCanvas = null; // cached canvas for download without re-render
+
+async function _renderForPDF(){
+  // Sync mobile card values to hidden desktop rows
+  document.querySelectorAll('#tbody tr').forEach(tr=>{
+    const n=parseInt(tr.id.replace('r',''));
+    if(isNaN(n)||!_cards[n]) return;
+    const card=_cards[n];
+    ['desc','stand','casting','hardness','unit'].forEach(k=>{
+      const mInp=card.querySelector('[data-mc="'+k+'"]');
+      const dInp=tr._cells&&tr._cells[k]?.querySelector('input,select');
+      if(dInp&&mInp) dInp.value=mInp.value;
+    });
+    const wEl=tr._cells&&tr._cells['weight']?.querySelector('.wgt');
+    const rEl=tr._cells&&tr._cells['rate']?.querySelector('.rrate');
+    const qEl=tr._cells&&tr._cells['qty']?.querySelector('.qqty');
+    if(wEl) wEl.value=card.querySelector('.mc-wgt')?.value||0;
+    if(rEl) rEl.value=card.querySelector('.mc-rate')?.value||0;
+    if(qEl) qEl.value=card.querySelector('.mc-qty')?.value||1;
+  });
+  calc();
+
   const sp=document.getElementById('SP');
-  const ab=document.querySelector('.add-btn');
   const dbs=document.querySelectorAll('.del-btn');
   const uts=document.querySelectorAll('.utog');
   const uls=document.querySelectorAll('.ulbl');
-  sp.style.display='none';ab.style.display='none';
+  const mobCards=document.getElementById('mob-card-container');
+  const mobAddBtn=document.querySelector('.mob-add-btn');
+  const twrap=document.querySelector('.twrap');
+  const addBtn=document.querySelector('.add-btn');
+  const QD=document.getElementById('QD');
+
+  sp.style.display='none';
   dbs.forEach(b=>b.style.display='none');
   uts.forEach(t=>t.style.display='none');
   uls.forEach(l=>l.style.display='inline');
   document.querySelectorAll('.srow.disabled').forEach(r=>r.style.display='none');
-  try{
-    const el=document.getElementById('QD');
-    const canvas=await html2canvas(el,{scale:1.5,useCORS:true,backgroundColor:'#faf8f5',logging:false});
+  if(twrap)    { twrap.style.display='block'; twrap.style.overflow='visible'; }
+  if(addBtn)   addBtn.style.display='none';
+  if(mobCards) mobCards.style.display='none';
+  if(mobAddBtn)mobAddBtn.style.display='none';
+  const origW=QD.style.width, origMW=QD.style.maxWidth;
+  QD.style.width='860px'; QD.style.maxWidth='860px';
+
+  await new Promise(r=>setTimeout(r,150));
+
+  let canvas;
+  try {
+    canvas = await html2canvas(QD,{scale:1.6,useCORS:true,backgroundColor:'#faf8f5',logging:false,width:860});
+  } finally {
+    sp.style.display='';
+    dbs.forEach(b=>b.style.display='');
+    uts.forEach(t=>t.style.display='');
+    uls.forEach(l=>l.style.display='none');
+    document.querySelectorAll('.srow.disabled').forEach(r=>r.style.display='');
+    if(twrap)    { twrap.style.display=''; twrap.style.overflow=''; }
+    if(addBtn)   addBtn.style.display='';
+    if(mobCards) mobCards.style.display='';
+    if(mobAddBtn)mobAddBtn.style.display='';
+    QD.style.width=origW; QD.style.maxWidth=origMW;
+  }
+  return canvas;
+}
+
+async function openPDFPreview(){
+  const modal=document.getElementById('pdf-modal');
+  const loading=document.getElementById('pdf-loading');
+  const pages=document.getElementById('pdf-pages');
+  modal.classList.add('open');
+  loading.style.display='block';
+  pages.style.display='none';
+  pages.innerHTML='';
+  _pdfCanvas=null;
+
+  try {
+    const canvas=await _renderForPDF();
+    _pdfCanvas=canvas;
+
+    // A4 aspect ratio: 210/297
+    const A4_RATIO=297/210;
+    const pageW=canvas.width;
+    const pageH=Math.floor(pageW*A4_RATIO);
+    const totalPages=Math.ceil(canvas.height/pageH);
+
+    for(let p=0;p<totalPages;p++){
+      const pageCanvas=document.createElement('canvas');
+      pageCanvas.width=pageW;
+      pageCanvas.height=Math.min(pageH, canvas.height - p*pageH);
+      const ctx=pageCanvas.getContext('2d');
+      ctx.fillStyle='#faf8f5';
+      ctx.fillRect(0,0,pageCanvas.width,pageCanvas.height);
+      ctx.drawImage(canvas, 0, -p*pageH);
+      const img=document.createElement('img');
+      img.className='pdf-page-img';
+      img.src=pageCanvas.toDataURL('image/jpeg',0.88);
+      if(totalPages>1){
+        const lbl=document.createElement('div');
+        lbl.style.cssText='color:#666;font-family:Barlow Condensed,sans-serif;font-size:.65rem;letter-spacing:2px;text-transform:uppercase;text-align:center;margin-bottom:4px;';
+        lbl.textContent='Page '+(p+1)+' of '+totalPages;
+        pages.appendChild(lbl);
+      }
+      pages.appendChild(img);
+    }
+    loading.style.display='none';
+    pages.style.display='flex';
+  } catch(err){
+    loading.textContent='Error generating preview. Try downloading directly.';
+    loading.style.cssText='color:#c44;font-family:Barlow Condensed,sans-serif;font-size:.8rem;letter-spacing:1px;padding:40px;text-align:center;';
+    const fallback=document.createElement('button');
+    fallback.className='btn-pdf-dl';
+    fallback.style.cssText='margin:12px auto;display:block;padding:12px 24px;font-size:.8rem;';
+    fallback.textContent='Download Without Preview';
+    fallback.onclick=()=>{closePDFPreview();downloadPDF();};
+    pages.appendChild(fallback);
+    pages.style.display='flex';
+    console.error('PDF preview error:',err);
+  }
+}
+
+function closePDFPreview(){
+  document.getElementById('pdf-modal').classList.remove('open');
+  document.getElementById('pdf-pages').innerHTML='';
+  _pdfCanvas=null;
+}
+
+async function confirmDownloadPDF(){
+  const btn=document.getElementById('pdf-dl-btn');
+  btn.textContent='⏳ Saving…';
+  btn.disabled=true;
+  try {
+    let canvas=_pdfCanvas;
+    if(!canvas){ canvas=await _renderForPDF(); }
     const flat=document.createElement('canvas');
-    flat.width=canvas.width;flat.height=canvas.height;
+    flat.width=canvas.width; flat.height=canvas.height;
     const ctx=flat.getContext('2d');
-    ctx.fillStyle='#faf8f5';ctx.fillRect(0,0,flat.width,flat.height);ctx.drawImage(canvas,0,0);
-    const img=flat.toDataURL('image/jpeg',0.82);
+    ctx.fillStyle='#faf8f5'; ctx.fillRect(0,0,flat.width,flat.height);
+    ctx.drawImage(canvas,0,0);
+    const img=flat.toDataURL('image/jpeg',0.84);
     const{jsPDF}=window.jspdf;
     const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});
     const pw=pdf.internal.pageSize.getWidth(),ph=pdf.internal.pageSize.getHeight();
     const ih=flat.height*pw/flat.width;
     if(ih<=ph){pdf.addImage(img,'JPEG',0,0,pw,ih,undefined,'FAST');}
     else{let y=0;while(y<ih){pdf.addImage(img,'JPEG',0,-y,pw,ih,undefined,'FAST');y+=ph;if(y<ih)pdf.addPage();}}
-    const co=(V('sc')||'Quote').replace(/\s+/g,'_');
-    const ref=V('qref')||'QT';
-    pdf.save(`${co}_${ref}.pdf`);
+    pdf.save(`${(V('sc')||'Quote').replace(/\s+/g,'_')}_${V('qref')||'QT'}.pdf`);
+    closePDFPreview();
+  } finally {
+    btn.textContent='⬇ Download PDF';
+    btn.disabled=false;
+  }
+}
+
+async function downloadPDF(){
+  // Sync mobile card values to hidden desktop rows first
+  document.querySelectorAll('#tbody tr').forEach(tr=>{
+    const n=parseInt(tr.id.replace('r',''));
+    if(isNaN(n)||!_cards[n]) return;
+    const card=_cards[n];
+    ['desc','stand','casting','hardness','unit'].forEach(k=>{
+      const mInp=card.querySelector('[data-mc="'+k+'"]');
+      const dInp=tr._cells&&tr._cells[k]?.querySelector('input,select');
+      if(dInp&&mInp) dInp.value=mInp.value;
+    });
+    const wgtEl=tr._cells&&tr._cells['weight']?.querySelector('.wgt');
+    const rateEl=tr._cells&&tr._cells['rate']?.querySelector('.rrate');
+    const qtyEl=tr._cells&&tr._cells['qty']?.querySelector('.qqty');
+    if(wgtEl)  wgtEl.value=card.querySelector('.mc-wgt')?.value||0;
+    if(rateEl) rateEl.value=card.querySelector('.mc-rate')?.value||0;
+    if(qtyEl)  qtyEl.value=card.querySelector('.mc-qty')?.value||1;
+  });
+  calc();
+
+  const sp=document.getElementById('SP');
+  const dbs=document.querySelectorAll('.del-btn');
+  const uts=document.querySelectorAll('.utog');
+  const uls=document.querySelectorAll('.ulbl');
+  const mobCards=document.getElementById('mob-card-container');
+  const mobAddBtn=document.querySelector('.mob-add-btn');
+  const twrap=document.querySelector('.twrap');
+  const addBtn=document.querySelector('.add-btn');
+  const QD=document.getElementById('QD');
+
+  sp.style.display='none';
+  dbs.forEach(b=>b.style.display='none');
+  uts.forEach(t=>t.style.display='none');
+  uls.forEach(l=>l.style.display='inline');
+  document.querySelectorAll('.srow.disabled').forEach(r=>r.style.display='none');
+  // Force desktop layout for capture
+  if(twrap)    twrap.style.setProperty('display','block','important');
+  if(twrap)    twrap.style.overflow='visible';
+  if(addBtn)   addBtn.style.display='none';
+  if(mobCards) mobCards.style.display='none';
+  if(mobAddBtn)mobAddBtn.style.display='none';
+  const origW=QD.style.width, origMW=QD.style.maxWidth;
+  QD.style.width='860px'; QD.style.maxWidth='860px';
+  await new Promise(r=>setTimeout(r,150));
+  try{
+    const canvas=await html2canvas(QD,{scale:1.6,useCORS:true,backgroundColor:'#faf8f5',logging:false,width:860});
+    const flat=document.createElement('canvas');
+    flat.width=canvas.width;flat.height=canvas.height;
+    const ctx=flat.getContext('2d');
+    ctx.fillStyle='#faf8f5';ctx.fillRect(0,0,flat.width,flat.height);ctx.drawImage(canvas,0,0);
+    const img=flat.toDataURL('image/jpeg',0.84);
+    const{jsPDF}=window.jspdf;
+    const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});
+    const pw=pdf.internal.pageSize.getWidth(),ph=pdf.internal.pageSize.getHeight();
+    const ih=flat.height*pw/flat.width;
+    if(ih<=ph){pdf.addImage(img,'JPEG',0,0,pw,ih,undefined,'FAST');}
+    else{let y=0;while(y<ih){pdf.addImage(img,'JPEG',0,-y,pw,ih,undefined,'FAST');y+=ph;if(y<ih)pdf.addPage();}}
+    pdf.save(`${(V('sc')||'Quote').replace(/\s+/g,'_')}_${V('qref')||'QT'}.pdf`);
   }finally{
-    sp.style.display='';ab.style.display='';
-    dbs.forEach(b=>b.style.display='');
-    uts.forEach(t=>t.style.display='');
-    uls.forEach(l=>l.style.display='none');
+    sp.style.display=''; dbs.forEach(b=>b.style.display='');
+    uts.forEach(t=>t.style.display=''); uls.forEach(l=>l.style.display='none');
     document.querySelectorAll('.srow.disabled').forEach(r=>r.style.display='');
+    if(twrap){twrap.style.display='';twrap.style.overflow='';}
+    if(addBtn)   addBtn.style.display='';
+    if(mobCards) mobCards.style.display='';
+    if(mobAddBtn)mobAddBtn.style.display='';
+    QD.style.width=origW; QD.style.maxWidth=origMW;
   }
 }
 
@@ -1692,8 +2069,236 @@ function loadFromUrlHash(){
   try{const hash=location.hash;if(hash.startsWith('#settings=')){const encoded=hash.slice('#settings='.length);const s=JSON.parse(decodeURIComponent(escape(atob(encoded))));localStorage.setItem(LS,JSON.stringify(s));history.replaceState(null,'',location.pathname+location.search);return true;}}catch(e){}return false;
 }
 
+
+/* ═══════════════════ MOBILE CARD TABLE ═══════════════════ */
+// Map from row id -> card element
+const _cards = {};
+
+function isMobile(){ return window.innerWidth <= 680; }
+
+function buildMobCard(n){
+  const card = document.createElement('div');
+  card.className = 'mob-card-row';
+  card.id = 'mc' + n;
+  card.innerHTML = `
+    <div class="mob-card-hdr">
+      <span class="mob-card-sno">Item #${n}</span>
+      <span class="mob-card-stitle" id="mc-title-${n}">Roll Description</span>
+    </div>
+    <button class="mob-card-del" onclick="delRow(${n})">✕</button>
+    <div class="mob-card-grid">
+      <div class="mob-card-field full">
+        <span class="mob-card-lbl">Roll Description</span>
+        <input type="text" data-mc="desc" placeholder="e.g. Chilled Rolls Ø330×280×117mm…"
+               oninput="const t=document.getElementById('mc-title-${n}');if(t)t.textContent=this.value.slice(0,32)||'Roll Description';">
+      </div>
+      <div class="mob-card-field">
+        <span class="mob-card-lbl">Stand #</span>
+        <input type="text" data-mc="stand" placeholder="FM">
+      </div>
+      <div class="mob-card-field">
+        <span class="mob-card-lbl">Casting Process</span>
+        <input type="text" data-mc="casting" placeholder="Centrifugally cast">
+      </div>
+      <div class="mob-card-field">
+        <span class="mob-card-lbl">Hardness</span>
+        <input type="text" data-mc="hardness" placeholder="70-75°SH">
+      </div>
+      <div class="mob-card-field">
+        <span class="mob-card-lbl">Quantity</span>
+        <input type="number" data-mc="qty" class="mc-qty" value="1" min="0" inputmode="decimal" oninput="calcCard(${n})">
+      </div>
+      <div class="mob-card-field">
+        <span class="mob-card-lbl">Weight (kg)</span>
+        <input type="number" data-mc="weight" class="mc-wgt" value="0" min="0" step="0.001" inputmode="decimal" oninput="calcCard(${n})">
+      </div>
+      <div class="mob-card-field">
+        <span class="mob-card-lbl">Rate / kg</span>
+        <input type="number" data-mc="rate" class="mc-rate" value="0" min="0" step="0.01" inputmode="decimal" oninput="calcCard(${n})">
+      </div>
+      <div class="mob-card-field">
+        <span class="mob-card-lbl">Unit</span>
+        <select data-mc="unit">
+          <option>Pcs</option><option>Kg</option><option>MT</option><option>Set</option><option>Lot</option>
+        </select>
+      </div>
+      <div class="mob-card-amt-row">
+        <span class="mob-card-amt-lbl">Amount</span>
+        <div>
+          <div class="mob-card-amt" id="mc-amt-${n}">—</div>
+          <div class="mob-card-rate-note" id="mc-rn-${n}"></div>
+        </div>
+      </div>
+    </div>`;
+  _cards[n] = card;
+  return card;
+}
+
+function calcCard(n){
+  const card = _cards[n]; if(!card) return;
+  const w = parseFloat(card.querySelector('.mc-wgt')?.value || 0);
+  const r = parseFloat(card.querySelector('.mc-rate')?.value || 0);
+  const q = parseFloat(card.querySelector('.mc-qty')?.value || 1);
+  const amt = w * r;
+  const cur = V('scur')||'PKR';
+  const el = document.getElementById('mc-amt-' + n);
+  if(el) el.textContent = amt > 0 ? cur + ' ' + fmt(amt) : '—';
+  const rn = document.getElementById('mc-rn-' + n);
+  if(rn) rn.textContent = r > 0 ? cur + ' ' + fmt(r) + '/kg' : '';
+
+  // Sync back to the hidden desktop row so calc() totals still work
+  const tr = document.getElementById('r' + n);
+  if(tr && tr._cells){
+    const wgtInp  = tr._cells['weight']?.querySelector('.wgt');
+    const rateInp = tr._cells['rate']?.querySelector('.rrate');
+    const qtyInp  = tr._cells['qty']?.querySelector('.qqty');
+    const descInp = tr._cells['desc']?.querySelector('input');
+    const standInp= tr._cells['stand']?.querySelector('input');
+    const castInp = tr._cells['casting']?.querySelector('input');
+    const hardInp = tr._cells['hardness']?.querySelector('input');
+    if(wgtInp)  wgtInp.value  = w;
+    if(rateInp) rateInp.value = r;
+    if(qtyInp)  qtyInp.value  = q;
+    const descMob = card.querySelector('[data-mc="desc"]');
+    const standMob= card.querySelector('[data-mc="stand"]');
+    const castMob = card.querySelector('[data-mc="casting"]');
+    const hardMob = card.querySelector('[data-mc="hardness"]');
+    if(descInp && descMob)  descInp.value  = descMob.value;
+    if(standInp && standMob)standInp.value = standMob.value;
+    if(castInp && castMob)  castInp.value  = castMob.value;
+    if(hardInp && hardMob)  hardInp.value  = hardMob.value;
+  }
+  calc();
+}
+
+function renderMobCards(){
+  const container = document.getElementById('mob-card-container');
+  if(!container) return;
+  container.innerHTML = '';
+  // Iterate over existing desktop rows and create a card for each
+  document.querySelectorAll('#tbody tr').forEach(tr => {
+    const n = parseInt(tr.id.replace('r',''));
+    if(isNaN(n)) return;
+    const card = buildMobCard(n);
+    // Pre-fill values from desktop row if available
+    if(tr._cells){
+      const sync = (mcKey, desktopSel) => {
+        const inp = tr._cells[mcKey]?.querySelector('input,select');
+        const mInp = card.querySelector('[data-mc="'+mcKey+'"]');
+        if(inp && mInp) mInp.value = inp.value;
+      };
+      ['desc','stand','casting','hardness','qty','weight','rate','unit'].forEach(k => sync(k, k));
+    }
+    container.appendChild(card);
+  });
+}
+
+// addRow and delRow handle mobile cards directly (merged above)
+
+/* ═══════════════════ TOUCH DRAG — RELIABLE MOBILE SORT ═══════════════════
+   Uses a floating ghost label + live highlight to show where item will land.
+   Works on both iOS and Android without preventDefault conflicts.
+═══════════════════════════════════════════════════════════════════════════ */
+let _ghost = null;
+
+function addTouchDrag(listId, onReorder){
+  const list = document.getElementById(listId);
+  if(!list || list._tdBound) return;
+  list._tdBound = true;
+
+  let dragEl=null, startKey=null, lastTarget=null;
+
+  function findItemAt(y){
+    const els = list.querySelectorAll('[data-key],[data-id]');
+    let best=null, bestDist=Infinity;
+    els.forEach(el=>{
+      if(el===dragEl) return;
+      const r=el.getBoundingClientRect();
+      const mid=(r.top+r.bottom)/2;
+      const dist=Math.abs(y-mid);
+      if(dist<bestDist){bestDist=dist;best=el;}
+    });
+    return best;
+  }
+
+  function clearHighlights(){
+    list.querySelectorAll('.touch-over').forEach(el=>el.classList.remove('touch-over'));
+  }
+
+  list.addEventListener('touchstart', e=>{
+    const handle = e.target.closest('.cdh,.trow-item');
+    const item   = e.target.closest('[data-key],[data-id]');
+    if(!item) return;
+    // Only start drag from the handle icon OR if nothing interactive is under finger
+    if(e.target.closest('input,select,button,label,.tsl,.tsw') && !e.target.closest('.cdh')) return;
+    dragEl   = item;
+    startKey = item.dataset.key || item.dataset.id;
+    item.classList.add('touch-drag');
+    // Create ghost label
+    if(_ghost) _ghost.remove();
+    _ghost = document.createElement('div');
+    _ghost.className = 'drag-ghost';
+    _ghost.textContent = '✥ ' + (item.querySelector('.cname,.trow-label-inp')?.textContent || item.querySelector('.trow-label-inp')?.value || 'Item');
+    document.body.appendChild(_ghost);
+    const t = e.touches[0];
+    _ghost.style.left = (t.clientX - 20) + 'px';
+    _ghost.style.top  = (t.clientY - 40) + 'px';
+    e.preventDefault();
+  }, {passive:false});
+
+  list.addEventListener('touchmove', e=>{
+    if(!dragEl) return;
+    e.preventDefault();
+    const t = e.touches[0];
+    if(_ghost){
+      _ghost.style.left = (t.clientX - 20) + 'px';
+      _ghost.style.top  = (t.clientY - 40) + 'px';
+    }
+    clearHighlights();
+    const target = findItemAt(t.clientY);
+    if(target){ target.classList.add('touch-over'); lastTarget=target; }
+    else lastTarget=null;
+  }, {passive:false});
+
+  function endDrag(e){
+    if(!dragEl) return;
+    dragEl.classList.remove('touch-drag');
+    clearHighlights();
+    if(_ghost){ _ghost.remove(); _ghost=null; }
+    if(lastTarget){
+      const toKey = lastTarget.dataset.key || lastTarget.dataset.id;
+      if(toKey && toKey !== startKey) onReorder(startKey, toKey);
+    }
+    dragEl=null; startKey=null; lastTarget=null;
+  }
+
+  list.addEventListener('touchend',   endDrag);
+  list.addEventListener('touchcancel',endDrag);
+}
+
+/* Re-init touch drag after each rebuild (wrap originals) */
+// Touch drag re-init is done inline in buildColManager and buildTrowsManager
+
+window.addEventListener('resize',()=>{ if(isMobile()) renderMobCards(); });
+
 loadFromUrlHash();
 init();
 </script>
+
+<!-- ══════════════════ PDF PREVIEW MODAL ══════════════════ -->
+<div id="pdf-modal">
+  <div class="pdf-modal-bar">
+    <h3>📄 PDF Preview</h3>
+    <div class="pdf-modal-actions">
+      <button class="btn-pdf-dl" id="pdf-dl-btn" onclick="confirmDownloadPDF()">⬇ Download PDF</button>
+      <button class="btn-pdf-cl" onclick="closePDFPreview()">✕ Close</button>
+    </div>
+  </div>
+  <div class="pdf-modal-scroll" id="pdf-modal-scroll">
+    <div class="pdf-modal-loading" id="pdf-loading">Generating preview…</div>
+    <div class="pdf-modal-pages" id="pdf-pages" style="display:none"></div>
+  </div>
+</div>
+
 </body>
 </html>
