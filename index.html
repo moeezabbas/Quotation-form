@@ -1291,14 +1291,18 @@ async function downloadPDF(){
   document.querySelectorAll('.srow.disabled').forEach(r=>r.style.display='none');
   try{
     const el=document.getElementById('QD');
-    const canvas=await html2canvas(el,{scale:2,useCORS:true,backgroundColor:'#faf8f5'});
-    const img=canvas.toDataURL('image/png');
+    const canvas=await html2canvas(el,{scale:1.5,useCORS:true,backgroundColor:'#faf8f5',logging:false});
+    const flat=document.createElement('canvas');
+    flat.width=canvas.width;flat.height=canvas.height;
+    const ctx=flat.getContext('2d');
+    ctx.fillStyle='#faf8f5';ctx.fillRect(0,0,flat.width,flat.height);ctx.drawImage(canvas,0,0);
+    const img=flat.toDataURL('image/jpeg',0.82);
     const{jsPDF}=window.jspdf;
-    const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+    const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});
     const pw=pdf.internal.pageSize.getWidth(),ph=pdf.internal.pageSize.getHeight();
-    const ih=canvas.height*pw/canvas.width;
-    if(ih<=ph){pdf.addImage(img,'PNG',0,0,pw,ih);}
-    else{let y=0;while(y<ih){pdf.addImage(img,'PNG',0,-y,pw,ih);y+=ph;if(y<ih)pdf.addPage();}}
+    const ih=flat.height*pw/flat.width;
+    if(ih<=ph){pdf.addImage(img,'JPEG',0,0,pw,ih,undefined,'FAST');}
+    else{let y=0;while(y<ih){pdf.addImage(img,'JPEG',0,-y,pw,ih,undefined,'FAST');y+=ph;if(y<ih)pdf.addPage();}}
     const co=(V('sc')||'Quote').replace(/\s+/g,'_');
     const ref=V('qref')||'QT';
     pdf.save(`${co}_${ref}.pdf`);
