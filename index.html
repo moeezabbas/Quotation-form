@@ -123,6 +123,11 @@ body{font-family:'Barlow',sans-serif;background:#b0aba3;color:var(--ink);min-hei
 .ti-del{background:none;border:none;color:#333;cursor:pointer;font-size:.82rem;}.ti-del:hover{color:var(--accent);}
 .add-ti-btn{background:#1e1e1e;border:1px dashed #3a3a3a;color:#666;border-radius:2px;padding:5px 12px;font-family:'Barlow Condensed',sans-serif;font-size:.67rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;width:100%;margin-top:4px;}
 .add-ti-btn:hover{background:#272727;color:#aaa;}
+/* section toggle row in settings */
+.sec-toggle-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.sec-toggle-row label:first-child{font-size:.53rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--silver);}
+/* hidden doc section */
+.sec-hidden{display:none!important;}
 
 /* ═══ DOCUMENT ═══ */
 #QD{background:var(--warm);max-width:1100px;margin:0 auto;box-shadow:0 6px 36px rgba(0,0,0,.28);overflow:hidden;font-size:var(--fs-base);}
@@ -409,17 +414,45 @@ table.it td input[type="number"]{text-align:right;}
           <button class="add-ti-btn" onclick="addTermItem()">+ Add Term</button>
         </div>
         <div>
-          <div class="sf" style="margin-bottom:8px"><label>Payment Text</label>
+          <div class="sf" style="margin-bottom:8px">
+            <div class="sec-toggle-row">
+              <label>Payment Text</label>
+              <label class="tsw" title="Show/Hide in document">
+                <input type="checkbox" id="tog-payment" checked onchange="toggleSection('payment',this.checked)">
+                <span class="tsl"></span>
+              </label>
+            </div>
             <textarea id="s-pay" style="min-height:60px" oninput="document.getElementById('doc-payment').value=this.value;save()">1,000,000/- advance, balance at the time of delivery after final inspection.</textarea>
           </div>
-          <div class="sf" style="margin-bottom:8px"><label>Warranty Text</label>
+          <div class="sf" style="margin-bottom:8px">
+            <div class="sec-toggle-row">
+              <label>Warranty Text</label>
+              <label class="tsw" title="Show/Hide in document">
+                <input type="checkbox" id="tog-warranty" checked onchange="toggleSection('warranty',this.checked)">
+                <span class="tsl"></span>
+              </label>
+            </div>
             <textarea id="s-warranty" style="min-height:70px" oninput="document.getElementById('doc-warranty').value=this.value;save()">Mill Roll Specialists offers guarantee for free replacement in case of Roll breakage in normal operation, without mill accident up to first dressing.</textarea>
           </div>
-          <div class="sf"><label>Closing / Thanks</label>
+          <div class="sf" style="margin-bottom:8px">
+            <div class="sec-toggle-row">
+              <label>Closing / Thanks</label>
+              <label class="tsw" title="Show/Hide in document">
+                <input type="checkbox" id="tog-thanks" checked onchange="toggleSection('thanks',this.checked)">
+                <span class="tsl"></span>
+              </label>
+            </div>
             <textarea id="s-thanks" style="min-height:50px" oninput="document.getElementById('doc-thanks').value=this.value;save()">Thanking you and assuring you best of our services.</textarea>
           </div>
-          <div class="sf" style="margin-top:6px"><label>Notes / Remarks</label>
-            <textarea id="sn" style="min-height:50px" oninput="document.getElementById('doc-notes').value=this.value;save()"></textarea>
+          <div class="sf" style="margin-top:6px">
+            <div class="sec-toggle-row">
+              <label>Notes / Remarks</label>
+              <label class="tsw" title="Show/Hide in document">
+                <input type="checkbox" id="tog-notes" onchange="toggleSection('notes',this.checked)">
+                <span class="tsl"></span>
+              </label>
+            </div>
+            <textarea id="sn" style="min-height:50px" oninput="syncNotes()"></textarea>
           </div>
         </div>
       </div>
@@ -580,21 +613,21 @@ Please refer to the telephonic talk and your visit to the Office; we are pleased
         <ol id="terms-view-list"></ol>
       </div>
 
-      <div class="payment-block">
+      <div class="payment-block" id="sec-payment">
         <div class="pb-label">Payment:</div>
         <textarea id="doc-payment" rows="1">1,000,000/- advance, balance at the time of delivery after final inspection.</textarea>
       </div>
 
-      <div class="warranty-block">
+      <div class="warranty-block" id="sec-warranty">
         <div class="wb-label">Warranty / Guarantee:</div>
         <textarea id="doc-warranty" rows="3">Mill Roll Specialists offers guarantee for free replacement in case of Roll breakage in normal operation, without mill accident up to first dressing.</textarea>
       </div>
 
-      <div class="thank-block" style="margin-bottom:14px">
+      <div class="thank-block" id="sec-thanks" style="margin-bottom:14px">
         <textarea id="doc-thanks" rows="1">Thanking you and assuring you best of our services.</textarea>
       </div>
 
-      <div id="doc-notes-wrap" style="margin-bottom:14px;display:none">
+      <div id="sec-notes" style="margin-bottom:14px;display:none">
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink);margin-bottom:2px;">Notes / Remarks:</div>
         <textarea id="doc-notes" rows="2" style="width:100%;border:none;background:transparent;font-family:Barlow,sans-serif;font-size:var(--fs-sm);color:#333;outline:none;resize:none;line-height:1.6;padding:0;"></textarea>
       </div>
@@ -727,6 +760,12 @@ function save(){
     customCols:JSON.parse(JSON.stringify(CUSTOM_COLS)),
     trows:JSON.parse(JSON.stringify(TROWS)),
     termItems:TERM_ITEMS.slice(),
+    secVis:{
+      payment: document.getElementById('tog-payment')?.checked !== false,
+      warranty: document.getElementById('tog-warranty')?.checked !== false,
+      thanks: document.getElementById('tog-thanks')?.checked !== false,
+      notes: document.getElementById('tog-notes')?.checked === true,
+    },
     panelOpen:!document.getElementById('sbody').classList.contains('hide'),
     fsBase:parseFloat(document.getElementById('fs-base-r').value),
     fsSm:parseFloat(document.getElementById('fs-sm-r').value),
@@ -787,9 +826,13 @@ function init(){
   document.getElementById('mvalid').value=fmtD(vd);
   document.getElementById('doc-date-text').value=td.toLocaleDateString('en-US',{month:'long',day:'2-digit',year:'numeric'}).replace(',','');
 
-  // wire doc-notes visibility
-  document.getElementById('sn').addEventListener('input',()=>{
-    document.getElementById('doc-notes-wrap').style.display=document.getElementById('doc-notes').value.trim()?'block':'none';
+  // Restore section visibility from saved state
+  const sv = s.secVis || {};
+  ['payment','warranty','thanks','notes'].forEach(k => {
+    const on = sv[k] !== undefined ? sv[k] : (k !== 'notes'); // notes off by default
+    const chk = document.getElementById('tog-' + k);
+    if(chk) chk.checked = on;
+    toggleSection(k, on, true); // silent = no save on init
   });
 
   buildColManager(); buildWidthManager(); buildTrowsManager(); buildCustomColManager(); buildTermManager();
@@ -875,6 +918,24 @@ function updateFonts(silent){
 }
 
 /* ═══════════════════ LOGO ═══════════════════ */
+/* section visibility toggle */
+function toggleSection(key, visible, silent){
+  const sec = document.getElementById('sec-' + key);
+  if(sec) sec.style.display = visible ? '' : 'none';
+  if(!silent) save();
+}
+
+function syncNotes(){
+  const val = document.getElementById('sn').value;
+  document.getElementById('doc-notes').value = val;
+  const chk = document.getElementById('tog-notes');
+  if(chk && !chk.checked && val.trim()){
+    chk.checked = true;
+    toggleSection('notes', true, true);
+  }
+  save();
+}
+
 function uploadLogo(e){
   const f=e.target.files[0]; if(!f)return;
   const r=new FileReader(); r.onload=ev=>{
@@ -1329,6 +1390,12 @@ function getSettingsObj(){
     customCols:JSON.parse(JSON.stringify(CUSTOM_COLS)),
     trows:JSON.parse(JSON.stringify(TROWS)),
     termItems:TERM_ITEMS.slice(),
+    secVis:{
+      payment: document.getElementById('tog-payment')?.checked !== false,
+      warranty: document.getElementById('tog-warranty')?.checked !== false,
+      thanks: document.getElementById('tog-thanks')?.checked !== false,
+      notes: document.getElementById('tog-notes')?.checked === true,
+    },
     panelOpen:!document.getElementById('sbody').classList.contains('hide'),
     fsBase:parseFloat(document.getElementById('fs-base-r').value),
     fsSm:parseFloat(document.getElementById('fs-sm-r').value),
