@@ -1098,63 +1098,69 @@ function addTotalRow(){
 
 /* ═══════════════════ RENDER HEADERS ═══════════════════ */
 function renderHeaders(){
-  const thm=document.getElementById('thm');
-  thm.innerHTML='';
-
   const sizeKeys=['dia','len','bore'];
   const visSizes=COLS.filter(c=>sizeKeys.includes(c.key)&&c.vis);
-  let sizeAdded=false;
+  const hasSizes=visSizes.length>0;
 
-  // # header
-  const h0=document.createElement('th');h0.style.cssText='width:28px;text-align:center';h0.textContent='S.No';
-  // we'll handle sno column in row rendering
+  // Rebuild both header rows from scratch
+  const thead=document.querySelector('#itable thead');
+  thead.innerHTML='';
 
-  COLS.forEach(col=>{
-    if(!col.vis)return;
-    const ws=getWpx(col);
-    if(sizeKeys.includes(col.key)){
-      if(!sizeAdded){
-        const grp=document.createElement('th');grp.className='ctr';
-        grp.colSpan=visSizes.length;
-        grp.textContent='Size (in/mm per field)';
-        thm.appendChild(grp);sizeAdded=true;
-      }
-      return;
-    }
+  const rowTop=document.createElement('tr');rowTop.className='thm';rowTop.id='thm';
+  const rowSub=hasSizes ? document.createElement('tr') : null;
+  if(rowSub){rowSub.id='ths';rowSub.style.background='#273d4d';}
+
+  // Helper: make a th
+  function mkTh(txt,opts={}){
     const th=document.createElement('th');
-    th.textContent=col.label;
-    if(['weight','qty','rate','amount'].includes(col.key))th.className='rgt';
-    if(ws)th.style.width=ws;
-    thm.appendChild(th);
-  });
-
-  // size sub headers
-  if(visSizes.length>0){
-    // we need a second header row for size subs — append to same row via a ths row
-    // Instead, we add sub-labels inline via row rendering, so just skip second row complexity
-    // Add size sub-headers as separate row
-    const ths=document.getElementById('ths')||createSubHeaderRow();
-    ths.innerHTML='';
-    COLS.filter(c=>c.vis).forEach(col=>{
-      if(sizeKeys.includes(col.key)){
-        const th=document.createElement('th');th.className='ctr';th.textContent=col.label;
-        const ws=getWpx(col);if(ws)th.style.width=ws;
-        ths.appendChild(th);
-      }
-    });
-  } else {
-    const ths=document.getElementById('ths');if(ths)ths.remove();
+    th.textContent=txt||'';
+    if(opts.w) th.style.width=opts.w;
+    if(opts.cls) th.className=opts.cls;
+    if(opts.span) th.colSpan=opts.span;
+    if(opts.color) th.style.color=opts.color;
+    if(opts.style) th.style.cssText+=';'+opts.style;
+    return th;
+  }
+  // Helper: make empty placeholder th for sub-row
+  function mkEmpty(w){
+    const th=document.createElement('th');
+    if(w) th.style.width=w;
+    return th;
   }
 
-  const tdel=document.createElement('th');tdel.style.width='22px';thm.appendChild(tdel);
-}
+  let sizeGroupAdded=false;
 
-function createSubHeaderRow(){
-  const tr=document.createElement('tr');tr.id='ths';tr.style.cssText='background:#273d4d;';
-  tr.querySelectorAll('th').forEach=()=>{};
-  const thead=document.querySelector('#itable thead');
-  thead.appendChild(tr);
-  return tr;
+  COLS.forEach(col=>{
+    if(!col.vis) return;
+    const ws=getWpx(col);
+
+    if(sizeKeys.includes(col.key)){
+      // First size col triggers the group header on top row
+      if(!sizeGroupAdded){
+        const grpTh=mkTh('SIZE (IN/MM PER FIELD)',{cls:'ctr',span:visSizes.length});
+        rowTop.appendChild(grpTh);
+        sizeGroupAdded=true;
+      }
+      // Sub-row: individual size label
+      if(rowSub){
+        const subTh=mkTh(col.label,{cls:'ctr',w:ws,color:'#8aabb8',style:'font-size:.59rem;letter-spacing:1px;font-weight:400;padding:4px 6px;border-right:1px solid rgba(255,255,255,.05)'});
+        rowSub.appendChild(subTh);
+      }
+    } else {
+      // Normal column — top row gets the label
+      const cls=['weight','qty','rate','amount'].includes(col.key)?'rgt':'';
+      rowTop.appendChild(mkTh(col.label,{cls,w:ws}));
+      // Sub-row gets an empty placeholder spanning 1 col
+      if(rowSub) rowSub.appendChild(mkEmpty(ws));
+    }
+  });
+
+  // Delete button column
+  rowTop.appendChild(mkTh('',{w:'22px'}));
+  if(rowSub) rowSub.appendChild(mkEmpty('22px'));
+
+  thead.appendChild(rowTop);
+  if(rowSub) thead.appendChild(rowSub);
 }
 
 /* ═══════════════════ ROWS ═══════════════════ */
@@ -1227,9 +1233,12 @@ function buildCells(n){
 
 function renderRow(tr,n){
   const cells=tr._cells||(tr._cells=buildCells(n));
+  // Detach all children — we rebuild from scratch each call
   while(tr.firstChild)tr.removeChild(tr.firstChild);
-  const sizeKeys=['dia','len','bore'];
+
   COLS.forEach(col=>{
+    if(!col.vis) return; // skip hidden cols entirely (not display:none — that breaks table layout)
+
     let td=cells[col.key];
     if(!td){
       if(col.custom){
@@ -1238,10 +1247,13 @@ function renderRow(tr,n){
         ctd.appendChild(ci);cells[col.key]=ctd;td=ctd;
       } else return;
     }
-    td.style.display=col.vis?'':'none';
+
+    // Remove any stale display:none from previous renders
+    td.style.display='';
     const ws=getWpx(col);if(ws)td.style.width=ws;else td.style.width='';
     tr.appendChild(td);
   });
+
   tr.appendChild(cells['delete']);
 }
 
@@ -1281,18 +1293,38 @@ function renderFootTotals(totQty,totWt,sub){
   sub=sub!==undefined?sub:(window._sub||0);
   const tfoot=document.getElementById('tfoot-row');tfoot.innerHTML='';
   const sizeKeys=['dia','len','bore'];
-  let sizeAdded=false;
-  const sizeCount=COLS.filter(c=>sizeKeys.includes(c.key)&&c.vis).length;
+  const visSizes=COLS.filter(c=>sizeKeys.includes(c.key)&&c.vis);
+  let sizeGroupAdded=false;
+
   COLS.forEach(col=>{
     if(!col.vis)return;
-    const td=document.createElement('td');
+
     if(sizeKeys.includes(col.key)){
-      if(!sizeAdded){td.colSpan=sizeCount;td.className='tot-label';td.textContent='Column Totals ↓';tfoot.appendChild(td);sizeAdded=true;}return;
+      if(!sizeGroupAdded){
+        // One td spanning all visible size cols with label
+        const td=document.createElement('td');
+        td.colSpan=visSizes.length;
+        td.className='tot-label';
+        td.textContent='COLUMN TOTALS ↓';
+        tfoot.appendChild(td);
+        sizeGroupAdded=true;
+      }
+      return; // skip individual size cols — already grouped
     }
-    if(col.key==='weight'){td.style.textAlign='right';td.innerHTML=`<strong>${fmt(totWt)}</strong><div style="font-size:.57rem;color:#888">kg total</div>`;}
-    else if(col.key==='qty'){td.style.textAlign='right';td.innerHTML=`<strong>${fmt(totQty)}</strong><div style="font-size:.57rem;color:#888">qty total</div>`;}
-    else if(col.key==='amount'){td.style.textAlign='right';td.innerHTML=`<strong style="color:var(--accent)">${fmt(sub)}</strong><div style="font-size:.57rem;color:#888">subtotal</div>`;}
-    else if(col.key==='desc'){td.className='tot-label';td.textContent='Totals:';}
+
+    const td=document.createElement('td');
+    if(col.key==='weight'){
+      td.style.textAlign='right';
+      td.innerHTML=`<strong>${fmt(totWt)}</strong><div style="font-size:.57rem;color:#888">kg total</div>`;
+    } else if(col.key==='qty'){
+      td.style.textAlign='right';
+      td.innerHTML=`<strong>${fmt(totQty)}</strong><div style="font-size:.57rem;color:#888">qty total</div>`;
+    } else if(col.key==='amount'){
+      td.style.textAlign='right';
+      td.innerHTML=`<strong style="color:var(--accent)">${fmt(sub)}</strong><div style="font-size:.57rem;color:#888">subtotal</div>`;
+    } else if(col.key==='desc'){
+      td.className='tot-label';td.textContent='TOTALS:';
+    }
     tfoot.appendChild(td);
   });
   const tdel=document.createElement('td');tfoot.appendChild(tdel);
