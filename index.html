@@ -1177,6 +1177,7 @@ function init(){
   buildColManager(); buildWidthManager(); buildTrowsManager(); buildCustomColManager(); buildTermManager();
   renderHeaders(); addRow(); addRow(); addRow();
   renderSumBox(); renderTermsView();
+  if(isMobile()) setTimeout(renderMobCards, 50);
 }
 
 function mergeCustomCols(cols,customCols){
@@ -1384,12 +1385,12 @@ function buildColManager(){
   setTimeout(()=>addTouchDrag('clist',(f,t)=>colReorder(f,t)),0);
 }
 let _dragKey=null;
-function colVis(key,v){const c=COLS.find(x=>x.key===key);if(c&&!c.fixed)c.vis=v;renderHeaders();refreshRows();renderFootTotals();save();}
+function colVis(key,v){const c=COLS.find(x=>x.key===key);if(c&&!c.fixed)c.vis=v;renderHeaders();refreshRows();renderFootTotals();refreshMobCards();save();}
 function colReorder(from,to){
   if(from===to)return;
   const fi=COLS.findIndex(c=>c.key===from),ti=COLS.findIndex(c=>c.key===to);
   const[m]=COLS.splice(fi,1);COLS.splice(ti,0,m);
-  buildColManager();buildWidthManager();renderHeaders();refreshRows();renderFootTotals();save();
+  buildColManager();buildWidthManager();renderHeaders();refreshRows();renderFootTotals();refreshMobCards();save();
 }
 let _ccId=0;
 function addCustomCol(label,w,key){
@@ -1398,7 +1399,7 @@ function addCustomCol(label,w,key){
   const cc={key:k,label:label||'Column '+_ccId,w:w||'auto'};
   CUSTOM_COLS.push(cc);
   COLS.push({key:k,label:cc.label,vis:true,w:cc.w,custom:true,showTotal:false});
-  buildCustomColManager();buildColManager();buildWidthManager();renderHeaders();refreshRows();renderFootTotals();save();
+  buildCustomColManager();buildColManager();buildWidthManager();renderHeaders();refreshRows();refreshMobCards();renderFootTotals();save();
 }
 function removeCustomCol(key){
   CUSTOM_COLS=CUSTOM_COLS.filter(c=>c.key!==key);
@@ -2076,62 +2077,182 @@ const _cards = {};
 
 function isMobile(){ return window.innerWidth <= 680; }
 
+/* Build one field div for a column */
+function _mobField(col, n, isFull){
+  const wrap = document.createElement('div');
+  wrap.className = 'mob-card-field' + (isFull ? ' full' : '');
+  wrap.dataset.mcCol = col.key; // so we can hide/show it when cols change
+
+  const lbl = document.createElement('span');
+  lbl.className = 'mob-card-lbl';
+  lbl.textContent = col.label;
+  wrap.appendChild(lbl);
+
+  const sizeKeys = ['dia','len','bore'];
+
+  if(col.key === 'amount'){
+    // Amount is read-only display
+    const amtRow = document.createElement('div');
+    amtRow.style.cssText = 'display:flex;justify-content:space-between;align-items:center;';
+    const amt = document.createElement('div');
+    amt.className = 'mob-card-amt'; amt.id = 'mc-amt-' + n; amt.textContent = '—';
+    const rn = document.createElement('div');
+    rn.className = 'mob-card-rate-note'; rn.id = 'mc-rn-' + n;
+    amtRow.appendChild(amt); amtRow.appendChild(rn);
+    wrap.appendChild(amtRow);
+  } else if(col.key === 'unit'){
+    const sel = document.createElement('select');
+    sel.dataset.mc = col.key;
+    sel.style.cssText = 'border:none;border-bottom:1.5px solid var(--mgray);background:transparent;font-family:Barlow,sans-serif;font-size:1rem;color:var(--ink);outline:none;padding:5px 0;width:100%;min-height:36px;-webkit-appearance:none;';
+    ['Pcs','Kg','MT','Set','Lot'].forEach(u=>{const o=document.createElement('option');o.textContent=u;sel.appendChild(o);});
+    wrap.appendChild(sel);
+  } else if(sizeKeys.includes(col.key)){
+    // Size field: two inputs in/mm side by side
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;gap:6px;align-items:center;';
+    const inp1 = document.createElement('input');
+    inp1.type = 'number'; inp1.placeholder = 'in'; inp1.inputMode = 'decimal';
+    inp1.dataset.mc = col.key + '_in';
+    inp1.style.cssText = 'flex:1;border:none;border-bottom:1.5px solid var(--mgray);background:transparent;font-family:Barlow,sans-serif;font-size:1rem;color:var(--ink);outline:none;padding:5px 0;min-width:40px;text-align:right;';
+    const sep = document.createElement('span');
+    sep.textContent = '/'; sep.style.cssText = 'color:#bbb;font-size:.8rem;';
+    const inp2 = document.createElement('input');
+    inp2.type = 'number'; inp2.placeholder = 'mm'; inp2.inputMode = 'decimal';
+    inp2.dataset.mc = col.key + '_mm';
+    inp2.style.cssText = inp1.style.cssText;
+    const uLbl = document.createElement('span');
+    uLbl.textContent = 'in/mm'; uLbl.style.cssText = 'font-size:.6rem;color:#aaa;font-family:Barlow Condensed,sans-serif;white-space:nowrap;';
+    row.appendChild(inp1); row.appendChild(sep); row.appendChild(inp2); row.appendChild(uLbl);
+    wrap.appendChild(row);
+  } else if(col.numeric || col.isQty || col.key === 'weight' || col.key === 'rate'){
+    const inp = document.createElement('input');
+    inp.type = 'number';
+    inp.dataset.mc = col.key;
+    inp.inputMode = 'decimal';
+    inp.style.cssText = 'border:none;border-bottom:1.5px solid var(--mgray);background:transparent;font-family:Barlow,sans-serif;font-size:1rem;color:var(--ink);outline:none;padding:5px 0;width:100%;min-height:36px;text-align:right;';
+    if(col.isQty || col.key === 'qty') { inp.value = '1'; inp.min = '0'; inp.className = 'mc-qty'; }
+    else if(col.key === 'weight') { inp.value = '0'; inp.min = '0'; inp.step = '0.001'; inp.className = 'mc-wgt'; }
+    else if(col.key === 'rate') { inp.value = '0'; inp.min = '0'; inp.step = '0.01'; inp.className = 'mc-rate'; }
+    else { inp.value = '0'; inp.min = '0'; }
+    inp.addEventListener('input', ()=>calcCard(n));
+    wrap.appendChild(inp);
+  } else {
+    // Text field (desc, stand, casting, hardness, sno, custom cols)
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.dataset.mc = col.key;
+    inp.style.cssText = 'border:none;border-bottom:1.5px solid var(--mgray);background:transparent;font-family:Barlow,sans-serif;font-size:1rem;color:var(--ink);outline:none;padding:5px 0;width:100%;min-height:36px;';
+    // Placeholders for known fields
+    const ph = {desc:'e.g. Chilled Rolls Ø330×280×117mm…', stand:'FM', casting:'Centrifugally cast', hardness:'70-75°SH', sno:'1'};
+    if(ph[col.key]) inp.placeholder = ph[col.key];
+    if(col.key === 'desc'){
+      inp.addEventListener('input', ()=>{
+        const t = document.getElementById('mc-title-'+n);
+        if(t) t.textContent = inp.value.slice(0,32) || 'Roll Description';
+      });
+    }
+    wrap.appendChild(inp);
+  }
+  return wrap;
+}
+
 function buildMobCard(n){
   const card = document.createElement('div');
   card.className = 'mob-card-row';
   card.id = 'mc' + n;
-  card.innerHTML = `
-    <div class="mob-card-hdr">
-      <span class="mob-card-sno">Item #${n}</span>
-      <span class="mob-card-stitle" id="mc-title-${n}">Roll Description</span>
-    </div>
-    <button class="mob-card-del" onclick="delRow(${n})">✕</button>
-    <div class="mob-card-grid">
-      <div class="mob-card-field full">
-        <span class="mob-card-lbl">Roll Description</span>
-        <input type="text" data-mc="desc" placeholder="e.g. Chilled Rolls Ø330×280×117mm…"
-               oninput="const t=document.getElementById('mc-title-${n}');if(t)t.textContent=this.value.slice(0,32)||'Roll Description';">
-      </div>
-      <div class="mob-card-field">
-        <span class="mob-card-lbl">Stand #</span>
-        <input type="text" data-mc="stand" placeholder="FM">
-      </div>
-      <div class="mob-card-field">
-        <span class="mob-card-lbl">Casting Process</span>
-        <input type="text" data-mc="casting" placeholder="Centrifugally cast">
-      </div>
-      <div class="mob-card-field">
-        <span class="mob-card-lbl">Hardness</span>
-        <input type="text" data-mc="hardness" placeholder="70-75°SH">
-      </div>
-      <div class="mob-card-field">
-        <span class="mob-card-lbl">Quantity</span>
-        <input type="number" data-mc="qty" class="mc-qty" value="1" min="0" inputmode="decimal" oninput="calcCard(${n})">
-      </div>
-      <div class="mob-card-field">
-        <span class="mob-card-lbl">Weight (kg)</span>
-        <input type="number" data-mc="weight" class="mc-wgt" value="0" min="0" step="0.001" inputmode="decimal" oninput="calcCard(${n})">
-      </div>
-      <div class="mob-card-field">
-        <span class="mob-card-lbl">Rate / kg</span>
-        <input type="number" data-mc="rate" class="mc-rate" value="0" min="0" step="0.01" inputmode="decimal" oninput="calcCard(${n})">
-      </div>
-      <div class="mob-card-field">
-        <span class="mob-card-lbl">Unit</span>
-        <select data-mc="unit">
-          <option>Pcs</option><option>Kg</option><option>MT</option><option>Set</option><option>Lot</option>
-        </select>
-      </div>
-      <div class="mob-card-amt-row">
-        <span class="mob-card-amt-lbl">Amount</span>
-        <div>
-          <div class="mob-card-amt" id="mc-amt-${n}">—</div>
-          <div class="mob-card-rate-note" id="mc-rn-${n}"></div>
-        </div>
-      </div>
-    </div>`;
+
+  // Header
+  const hdr = document.createElement('div');
+  hdr.className = 'mob-card-hdr';
+  hdr.innerHTML = `<span class="mob-card-sno">Item #${n}</span><span class="mob-card-stitle" id="mc-title-${n}">Roll Description</span>`;
+  card.appendChild(hdr);
+
+  // Delete button
+  const del = document.createElement('button');
+  del.className = 'mob-card-del';
+  del.textContent = '✕';
+  del.onclick = ()=>delRow(n);
+  card.appendChild(del);
+
+  // Grid
+  const grid = document.createElement('div');
+  grid.className = 'mob-card-grid';
+  card.appendChild(grid);
+
+  const sizeKeys = ['dia','len','bore'];
+
+  // Render fields for each VISIBLE column (respects settings)
+  // Skip 'sno' (shown in header) and 'amount' (shown at bottom always)
+  COLS.forEach(col => {
+    if(!col.vis) return;
+    if(col.key === 'sno') return; // shown in header badge
+    if(col.key === 'amount') return; // shown at bottom
+
+    // Size columns: show all three together in one full-width field
+    if(sizeKeys.includes(col.key)){
+      // Only add once (the first visible size col triggers a combined field)
+      if(grid.querySelector('[data-mc-col="dia"],[data-mc-col="len"],[data-mc-col="bore"]')) return;
+      const visSizes = COLS.filter(c=>sizeKeys.includes(c.key)&&c.vis);
+      visSizes.forEach(sc => {
+        const f = _mobField(sc, n, false);
+        grid.appendChild(f);
+      });
+      return;
+    }
+
+    const isFull = (col.key === 'desc');
+    const f = _mobField(col, n, isFull);
+    grid.appendChild(f);
+  });
+
+  // Amount row always at bottom
+  const amtRow = document.createElement('div');
+  amtRow.className = 'mob-card-amt-row';
+  amtRow.innerHTML = `<span class="mob-card-amt-lbl">Amount</span><div><div class="mob-card-amt" id="mc-amt-${n}">—</div><div class="mob-card-rate-note" id="mc-rn-${n}"></div></div>`;
+  grid.appendChild(amtRow);
+
   _cards[n] = card;
   return card;
+}
+
+/* Rebuild all visible mobile cards to reflect current COLS state */
+function refreshMobCards(){
+  if(!isMobile()) return;
+  const rows = document.querySelectorAll('#tbody tr');
+  rows.forEach(tr => {
+    const n = parseInt(tr.id.replace('r',''));
+    if(isNaN(n)) return;
+    // Save current values from old card
+    const oldCard = _cards[n];
+    const savedVals = {};
+    if(oldCard){
+      oldCard.querySelectorAll('[data-mc]').forEach(inp => {
+        savedVals[inp.dataset.mc] = inp.value;
+      });
+    }
+    // Build new card
+    const newCard = buildMobCard(n);
+    // Restore saved values
+    newCard.querySelectorAll('[data-mc]').forEach(inp => {
+      if(savedVals[inp.dataset.mc] !== undefined) inp.value = savedVals[inp.dataset.mc];
+    });
+    // Also restore from desktop cells if available
+    if(tr._cells){
+      ['desc','stand','casting','hardness','qty','weight','rate','unit','sno'].forEach(k=>{
+        const dInp = tr._cells[k]?.querySelector('input,select');
+        const mInp = newCard.querySelector('[data-mc="'+k+'"]');
+        if(dInp && mInp && !savedVals[k]) mInp.value = dInp.value;
+      });
+    }
+    // Replace in DOM
+    if(oldCard && oldCard.parentNode){
+      oldCard.parentNode.replaceChild(newCard, oldCard);
+    } else {
+      const container = document.getElementById('mob-card-container');
+      if(container) container.appendChild(newCard);
+    }
+    calcCard(n);
+  });
 }
 
 function calcCard(n){
@@ -2146,27 +2267,22 @@ function calcCard(n){
   const rn = document.getElementById('mc-rn-' + n);
   if(rn) rn.textContent = r > 0 ? cur + ' ' + fmt(r) + '/kg' : '';
 
-  // Sync back to the hidden desktop row so calc() totals still work
+  // Sync ALL visible column values back to the hidden desktop row
   const tr = document.getElementById('r' + n);
   if(tr && tr._cells){
+    // Numeric fields
     const wgtInp  = tr._cells['weight']?.querySelector('.wgt');
     const rateInp = tr._cells['rate']?.querySelector('.rrate');
     const qtyInp  = tr._cells['qty']?.querySelector('.qqty');
-    const descInp = tr._cells['desc']?.querySelector('input');
-    const standInp= tr._cells['stand']?.querySelector('input');
-    const castInp = tr._cells['casting']?.querySelector('input');
-    const hardInp = tr._cells['hardness']?.querySelector('input');
-    if(wgtInp)  wgtInp.value  = w;
+    if(wgtInp)  wgtInp.value = w;
     if(rateInp) rateInp.value = r;
-    if(qtyInp)  qtyInp.value  = q;
-    const descMob = card.querySelector('[data-mc="desc"]');
-    const standMob= card.querySelector('[data-mc="stand"]');
-    const castMob = card.querySelector('[data-mc="casting"]');
-    const hardMob = card.querySelector('[data-mc="hardness"]');
-    if(descInp && descMob)  descInp.value  = descMob.value;
-    if(standInp && standMob)standInp.value = standMob.value;
-    if(castInp && castMob)  castInp.value  = castMob.value;
-    if(hardInp && hardMob)  hardInp.value  = hardMob.value;
+    if(qtyInp)  qtyInp.value = q;
+    // Text & select fields — sync all that exist in both card and desktop
+    card.querySelectorAll('[data-mc]').forEach(mInp => {
+      const key = mInp.dataset.mc;
+      const dInp = tr._cells[key]?.querySelector('input,select');
+      if(dInp) dInp.value = mInp.value;
+    });
   }
   calc();
 }
@@ -2175,21 +2291,21 @@ function renderMobCards(){
   const container = document.getElementById('mob-card-container');
   if(!container) return;
   container.innerHTML = '';
-  // Iterate over existing desktop rows and create a card for each
+  Object.keys(_cards).forEach(k=>delete _cards[k]); // clear cache
   document.querySelectorAll('#tbody tr').forEach(tr => {
     const n = parseInt(tr.id.replace('r',''));
     if(isNaN(n)) return;
     const card = buildMobCard(n);
-    // Pre-fill values from desktop row if available
+    // Pre-fill from desktop cells
     if(tr._cells){
-      const sync = (mcKey, desktopSel) => {
-        const inp = tr._cells[mcKey]?.querySelector('input,select');
-        const mInp = card.querySelector('[data-mc="'+mcKey+'"]');
-        if(inp && mInp) mInp.value = inp.value;
-      };
-      ['desc','stand','casting','hardness','qty','weight','rate','unit'].forEach(k => sync(k, k));
+      card.querySelectorAll('[data-mc]').forEach(mInp => {
+        const key = mInp.dataset.mc;
+        const dInp = tr._cells[key]?.querySelector('input,select');
+        if(dInp) mInp.value = dInp.value;
+      });
     }
     container.appendChild(card);
+    calcCard(n);
   });
 }
 
@@ -2279,7 +2395,13 @@ function addTouchDrag(listId, onReorder){
 /* Re-init touch drag after each rebuild (wrap originals) */
 // Touch drag re-init is done inline in buildColManager and buildTrowsManager
 
-window.addEventListener('resize',()=>{ if(isMobile()) renderMobCards(); });
+window.addEventListener('resize',()=>{
+  if(isMobile()){
+    const container=document.getElementById('mob-card-container');
+    // Only rebuild if cards haven't been built for current COLS
+    if(!container || container.children.length === 0) renderMobCards();
+  }
+});
 
 loadFromUrlHash();
 init();
