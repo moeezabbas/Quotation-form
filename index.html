@@ -1783,63 +1783,71 @@ function resetForm(){
 let _pdfCanvas = null; // cached canvas for download without re-render
 
 async function _renderForPDF(){
-  // Sync mobile card values to hidden desktop rows
+  // ── Step 1: Sync ALL mobile card values → hidden desktop rows ──────────
   document.querySelectorAll('#tbody tr').forEach(tr=>{
     const n=parseInt(tr.id.replace('r',''));
     if(isNaN(n)||!_cards[n]) return;
     const card=_cards[n];
-    ['desc','stand','casting','hardness','unit'].forEach(k=>{
-      const mInp=card.querySelector('[data-mc="'+k+'"]');
-      const dInp=tr._cells&&tr._cells[k]?.querySelector('input,select');
-      if(dInp&&mInp) dInp.value=mInp.value;
+    // Sync every data-mc field dynamically (works with any visible column set)
+    card.querySelectorAll('[data-mc]').forEach(mInp=>{
+      const key=mInp.dataset.mc;
+      // Special class-based numeric fields
+      if(mInp.classList.contains('mc-wgt')){
+        const el=tr._cells&&tr._cells['weight']?.querySelector('.wgt');
+        if(el) el.value=mInp.value||0;
+      } else if(mInp.classList.contains('mc-rate')){
+        const el=tr._cells&&tr._cells['rate']?.querySelector('.rrate');
+        if(el) el.value=mInp.value||0;
+      } else if(mInp.classList.contains('mc-qty')){
+        const el=tr._cells&&tr._cells['qty']?.querySelector('.qqty');
+        if(el) el.value=mInp.value||1;
+      } else {
+        // Generic text/select sync
+        const el=tr._cells&&tr._cells[key]?.querySelector('input,select');
+        if(el) el.value=mInp.value;
+      }
     });
-    const wEl=tr._cells&&tr._cells['weight']?.querySelector('.wgt');
-    const rEl=tr._cells&&tr._cells['rate']?.querySelector('.rrate');
-    const qEl=tr._cells&&tr._cells['qty']?.querySelector('.qqty');
-    if(wEl) wEl.value=card.querySelector('.mc-wgt')?.value||0;
-    if(rEl) rEl.value=card.querySelector('.mc-rate')?.value||0;
-    if(qEl) qEl.value=card.querySelector('.mc-qty')?.value||1;
   });
-  calc();
+  calc(); // refresh amounts with synced values
 
-  const sp=document.getElementById('SP');
-  const dbs=document.querySelectorAll('.del-btn');
-  const uts=document.querySelectorAll('.utog');
-  const uls=document.querySelectorAll('.ulbl');
-  const mobCards=document.getElementById('mob-card-container');
-  const mobAddBtn=document.querySelector('.mob-add-btn');
-  const twrap=document.querySelector('.twrap');
-  const addBtn=document.querySelector('.add-btn');
+  // ── Step 2: Force desktop layout by injecting an override <style> ──────
+  // inline style cannot beat !important in media queries, so we use a <style> tag
+  const overrideStyle=document.createElement('style');
+  overrideStyle.id='_pdf_override';
+  overrideStyle.textContent=`
+    .twrap{display:block!important;overflow:visible!important;}
+    .add-btn{display:none!important;}
+    #mob-card-container{display:none!important;}
+    .mob-add-btn{display:none!important;}
+    #SP{display:none!important;}
+    .del-btn{display:none!important;}
+    .utog{display:none!important;}
+    .ulbl{display:inline!important;}
+    .srow.disabled{display:none!important;}
+  `;
+  document.head.appendChild(overrideStyle);
+
+  // Fix QD width so it renders at desktop size
   const QD=document.getElementById('QD');
-
-  sp.style.display='none';
-  dbs.forEach(b=>b.style.display='none');
-  uts.forEach(t=>t.style.display='none');
-  uls.forEach(l=>l.style.display='inline');
-  document.querySelectorAll('.srow.disabled').forEach(r=>r.style.display='none');
-  if(twrap)    { twrap.style.display='block'; twrap.style.overflow='visible'; }
-  if(addBtn)   addBtn.style.display='none';
-  if(mobCards) mobCards.style.display='none';
-  if(mobAddBtn)mobAddBtn.style.display='none';
   const origW=QD.style.width, origMW=QD.style.maxWidth;
   QD.style.width='860px'; QD.style.maxWidth='860px';
 
-  await new Promise(r=>setTimeout(r,150));
+  // Give browser a full paint cycle to apply styles
+  await new Promise(r=>setTimeout(r,200));
 
   let canvas;
   try {
-    canvas = await html2canvas(QD,{scale:1.6,useCORS:true,backgroundColor:'#faf8f5',logging:false,width:860});
+    canvas = await html2canvas(QD,{
+      scale:1.6, useCORS:true, backgroundColor:'#faf8f5',
+      logging:false, width:860,
+      ignoreElements: el => el.id==='SP' || el.id==='mob-card-container' || el.classList.contains('mob-add-btn')
+    });
   } finally {
-    sp.style.display='';
-    dbs.forEach(b=>b.style.display='');
-    uts.forEach(t=>t.style.display='');
-    uls.forEach(l=>l.style.display='none');
-    document.querySelectorAll('.srow.disabled').forEach(r=>r.style.display='');
-    if(twrap)    { twrap.style.display=''; twrap.style.overflow=''; }
-    if(addBtn)   addBtn.style.display='';
-    if(mobCards) mobCards.style.display='';
-    if(mobAddBtn)mobAddBtn.style.display='';
-    QD.style.width=origW; QD.style.maxWidth=origMW;
+    // ── Step 3: Restore everything ─────────────────────────────────────
+    const ov=document.getElementById('_pdf_override');
+    if(ov) ov.remove();
+    QD.style.width=origW;
+    QD.style.maxWidth=origMW;
   }
   return canvas;
 }
@@ -1933,55 +1941,16 @@ async function confirmDownloadPDF(){
 }
 
 async function downloadPDF(){
-  // Sync mobile card values to hidden desktop rows first
-  document.querySelectorAll('#tbody tr').forEach(tr=>{
-    const n=parseInt(tr.id.replace('r',''));
-    if(isNaN(n)||!_cards[n]) return;
-    const card=_cards[n];
-    ['desc','stand','casting','hardness','unit'].forEach(k=>{
-      const mInp=card.querySelector('[data-mc="'+k+'"]');
-      const dInp=tr._cells&&tr._cells[k]?.querySelector('input,select');
-      if(dInp&&mInp) dInp.value=mInp.value;
-    });
-    const wgtEl=tr._cells&&tr._cells['weight']?.querySelector('.wgt');
-    const rateEl=tr._cells&&tr._cells['rate']?.querySelector('.rrate');
-    const qtyEl=tr._cells&&tr._cells['qty']?.querySelector('.qqty');
-    if(wgtEl)  wgtEl.value=card.querySelector('.mc-wgt')?.value||0;
-    if(rateEl) rateEl.value=card.querySelector('.mc-rate')?.value||0;
-    if(qtyEl)  qtyEl.value=card.querySelector('.mc-qty')?.value||1;
-  });
-  calc();
-
-  const sp=document.getElementById('SP');
-  const dbs=document.querySelectorAll('.del-btn');
-  const uts=document.querySelectorAll('.utog');
-  const uls=document.querySelectorAll('.ulbl');
-  const mobCards=document.getElementById('mob-card-container');
-  const mobAddBtn=document.querySelector('.mob-add-btn');
-  const twrap=document.querySelector('.twrap');
-  const addBtn=document.querySelector('.add-btn');
-  const QD=document.getElementById('QD');
-
-  sp.style.display='none';
-  dbs.forEach(b=>b.style.display='none');
-  uts.forEach(t=>t.style.display='none');
-  uls.forEach(l=>l.style.display='inline');
-  document.querySelectorAll('.srow.disabled').forEach(r=>r.style.display='none');
-  // Force desktop layout for capture
-  if(twrap)    twrap.style.setProperty('display','block','important');
-  if(twrap)    twrap.style.overflow='visible';
-  if(addBtn)   addBtn.style.display='none';
-  if(mobCards) mobCards.style.display='none';
-  if(mobAddBtn)mobAddBtn.style.display='none';
-  const origW=QD.style.width, origMW=QD.style.maxWidth;
-  QD.style.width='860px'; QD.style.maxWidth='860px';
-  await new Promise(r=>setTimeout(r,150));
-  try{
-    const canvas=await html2canvas(QD,{scale:1.6,useCORS:true,backgroundColor:'#faf8f5',logging:false,width:860});
+  // Direct download without preview — still uses _renderForPDF for correct syncing
+  const btn = document.querySelector('.btn-pdf');
+  if(btn){ btn.textContent='⏳ Rendering…'; btn.disabled=true; }
+  try {
+    const canvas = await _renderForPDF();
     const flat=document.createElement('canvas');
-    flat.width=canvas.width;flat.height=canvas.height;
+    flat.width=canvas.width; flat.height=canvas.height;
     const ctx=flat.getContext('2d');
-    ctx.fillStyle='#faf8f5';ctx.fillRect(0,0,flat.width,flat.height);ctx.drawImage(canvas,0,0);
+    ctx.fillStyle='#faf8f5'; ctx.fillRect(0,0,flat.width,flat.height);
+    ctx.drawImage(canvas,0,0);
     const img=flat.toDataURL('image/jpeg',0.84);
     const{jsPDF}=window.jspdf;
     const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});
@@ -1990,15 +1959,8 @@ async function downloadPDF(){
     if(ih<=ph){pdf.addImage(img,'JPEG',0,0,pw,ih,undefined,'FAST');}
     else{let y=0;while(y<ih){pdf.addImage(img,'JPEG',0,-y,pw,ih,undefined,'FAST');y+=ph;if(y<ih)pdf.addPage();}}
     pdf.save(`${(V('sc')||'Quote').replace(/\s+/g,'_')}_${V('qref')||'QT'}.pdf`);
-  }finally{
-    sp.style.display=''; dbs.forEach(b=>b.style.display='');
-    uts.forEach(t=>t.style.display=''); uls.forEach(l=>l.style.display='none');
-    document.querySelectorAll('.srow.disabled').forEach(r=>r.style.display='');
-    if(twrap){twrap.style.display='';twrap.style.overflow='';}
-    if(addBtn)   addBtn.style.display='';
-    if(mobCards) mobCards.style.display='';
-    if(mobAddBtn)mobAddBtn.style.display='';
-    QD.style.width=origW; QD.style.maxWidth=origMW;
+  } finally {
+    if(btn){ btn.textContent='👁 Preview & Download PDF'; btn.disabled=false; }
   }
 }
 
